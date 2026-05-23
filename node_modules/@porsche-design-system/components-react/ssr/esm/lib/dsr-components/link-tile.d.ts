@@ -1,0 +1,11 @@
+import { Component } from 'react';
+/**
+ * @slot {"name": "header", "description": "Renders a header section above the content area." }
+ * @slot {"name": "", "description": "Default slot for the img or picture tag." }
+ * @slot {"name": "footer", "description": "Renders a footer section below the description." }
+ */
+export declare class DSRLinkTile extends Component<any> {
+    host: HTMLElement;
+    private hasFooterSlot;
+    render(): JSX.Element;
+}

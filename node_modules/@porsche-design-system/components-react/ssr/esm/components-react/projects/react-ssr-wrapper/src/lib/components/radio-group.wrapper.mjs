@@ -1,0 +1,37 @@
+"use client";
+import { jsx } from 'react/jsx-runtime';
+import { forwardRef, useRef } from 'react';
+import { useEventCallback, usePrefix, useTheme, useBrowserLayoutEffect, useMergedClass } from '../../hooks.mjs';
+import { syncRef } from '../../utils.mjs';
+import { DSRRadioGroup } from '../dsr-components/radio-group.mjs';
+
+const PRadioGroup = /*#__PURE__*/ forwardRef(({ compact = false, description = '', direction = 'column', disabled = false, form, hideLabel = false, label = '', loading = false, message = '', name, onBlur, onChange, required = false, state = 'none', theme, value = '', className, children, ...rest }, ref) => {
+    const elementRef = useRef(undefined);
+    useEventCallback(elementRef, 'blur', onBlur);
+    useEventCallback(elementRef, 'change', onChange);
+    const WebComponentTag = usePrefix('p-radio-group');
+    const propsToSync = [compact, description, direction, disabled, form, hideLabel, label, loading, message, name, required, state, theme || useTheme(), value];
+    useBrowserLayoutEffect(() => {
+        const { current } = elementRef;
+        ['compact', 'description', 'direction', 'disabled', 'form', 'hideLabel', 'label', 'loading', 'message', 'name', 'required', 'state', 'theme', 'value'].forEach((propName, i) => (current[propName] = propsToSync[i]));
+    }, propsToSync);
+    const props = {
+        ...rest,
+        // @ts-ignore
+        ...(!process.browser
+            ? {
+                children: (jsx(DSRRadioGroup, { compact, description, direction, disabled, form, hideLabel, label, loading, message, name, required, state, theme: theme || useTheme(), value, children })),
+            }
+            : {
+                children,
+                suppressHydrationWarning: true,
+            }),
+        'data-ssr': '',
+        class: useMergedClass(elementRef, className),
+        ref: syncRef(elementRef, ref)
+    };
+    // @ts-ignore
+    return jsx(WebComponentTag, { ...props });
+});
+
+export { PRadioGroup };

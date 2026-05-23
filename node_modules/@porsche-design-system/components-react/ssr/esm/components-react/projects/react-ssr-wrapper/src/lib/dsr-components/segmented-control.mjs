@@ -1,0 +1,44 @@
+import { jsxs, Fragment, jsx } from 'react/jsx-runtime';
+import { Component } from 'react';
+import '../../provider.mjs';
+import { splitChildren } from '../../splitChildren.mjs';
+import { minifyCss } from '../../minifyCss.mjs';
+import { getSegmentedControlCss as getComponentCss$u } from '../../../../../../components/dist/styles/esm/styles-entry.mjs';
+import { descriptionId, labelId, getFieldsetAriaAttributes } from '../../../../../../components/dist/utils/esm/utils-entry.mjs';
+import { Label } from './label.mjs';
+import { StateMessage } from './state-message.mjs';
+import { PScroller } from '../components/scroller.wrapper.mjs';
+
+/**
+ * @slot {"name": "label", "description": "Shows a label. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ * @slot {"name": "label-after", "description": "Places additional content after the label text (for content that should not be part of the label, e.g. external links or `p-popover`)."}
+ * @slot {"name": "description", "description": "Shows a description. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ * @slot {"name": "", "description": "Default slot for the `p-segmented-control-item` tags." }
+ * @slot {"name": "message", "description": "Shows a state message. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ *
+ * @controlled { "props": ["value"], "event": "update", "isInternallyMutated": true }
+ */
+class DSRSegmentedControl extends Component {
+    host;
+    internals;
+    defaultValue;
+    formResetCallback() {
+        this.props.internals?.setFormValue(this.props.defaultValue?.toString());
+    }
+    formDisabledCallback() {
+        // Called when a parent fieldset is disabled or enabled
+    }
+    formStateRestoreCallback() {
+    }
+    render() {
+        const { children, namedSlotChildren, otherChildren } = splitChildren(this.props.children);
+        const manipulatedChildren = children.map((child) => typeof child === 'object' && 'props' in child && otherChildren.includes(child)
+            ? { ...child, props: { ...child.props, selected: child.props?.value === this.props.value, backgroundColor: this.props.backgroundColor, theme: this.props.theme } }
+            : child);
+        const itemWidths = this.props.noWrap ? undefined : { minWidth: 100, maxWidth: 100 };
+        const style = minifyCss(getComponentCss$u(itemWidths?.minWidth, itemWidths?.maxWidth, this.props.columns, this.props.disabled, this.props.hideLabel, this.props.state, this.props.theme, this.props.noWrap));
+        return (jsxs(Fragment, { children: [jsxs("template", { shadowroot: "open", shadowrootmode: "open", children: [jsx("style", { dangerouslySetInnerHTML: { __html: style } }), jsxs("fieldset", { inert: this.props.disabled, disabled: this.props.disabled, ...getFieldsetAriaAttributes(this.props.required, this.props.state === 'error'), "aria-labelledby": labelId, "aria-describedby": descriptionId, className: "root", children: [jsx(Label, { hasLabel: this.props.label || namedSlotChildren.filter(({ props: { slot } }) => slot === 'label').length > 0, hasDescription: this.props.description || namedSlotChildren.filter(({ props: { slot } }) => slot === 'description').length > 0, host: null, tag: "div", label: this.props.label, description: this.props.description, isRequired: this.props.required, isDisabled: this.props.disabled }), this.props.noWrap ? (jsx(PScroller, { theme: this.props.theme, className: "scroller", children: jsx("slot", {}) })) : (jsx("slot", {})), jsx(StateMessage, { hasMessage: (this.props.message || namedSlotChildren.filter(({ props: { slot } }) => slot === 'message').length > 0) && ['success', 'error'].includes(this.props.state), state: this.props.state, message: this.props.message, theme: this.props.theme, host: null })] })] }), manipulatedChildren] }));
+    }
+}
+
+export { DSRSegmentedControl };
