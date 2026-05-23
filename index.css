@@ -1,0 +1,243 @@
+@import 'tailwindcss';
+
+:root {
+  --color-canvas: #0E0E12;
+  --color-primary: #FBFCFF;
+  --color-accent: #3A9BE7;
+
+  --spot-x: 50%;
+  --spot-y: 50%;
+  --spot-on: 0;
+}
+
+html,
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+/* Starfield is rendered via React component instead */
+
+html {
+  scroll-behavior: auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ─── Unified Card System ──────────────────────────────────────────────── */
+.beam-card {
+  position: relative;
+  background: rgba(13, 13, 13, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.02);
+  transition:
+    border-color 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 400ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.beam-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    320px circle at var(--spot-x) var(--spot-y),
+    rgba(58, 155, 231, 0.55),
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: var(--spot-on, 0);
+  transition: opacity 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.beam-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--spot-x) var(--spot-y),
+    rgba(58, 155, 231, 0.06),
+    transparent 50%
+  );
+  opacity: var(--spot-on, 0);
+  transition: opacity 500ms cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.beam-card:hover {
+  border-color: rgba(58, 155, 231, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 48px rgba(58, 155, 231, 0.10);
+}
+
+.beam-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── Reveal animations ─────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero word stagger */
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(28px);
+  animation: hero-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--word-delay, 0ms);
+}
+@keyframes hero-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Kinetic interactive word */
+.kinetic-word {
+  position: relative;
+  cursor: default;
+  letter-spacing: 0;
+  transition:
+    color 350ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+    letter-spacing 350ms cubic-bezier(0.32, 0.72, 0, 1),
+    text-shadow 350ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, color, letter-spacing;
+}
+.kinetic-word:hover {
+  color: var(--color-accent, #3A9BE7);
+  transform: translateY(-2px);
+  letter-spacing: -0.012em;
+  text-shadow: 0 8px 24px rgba(58, 155, 231, 0.18);
+}
+
+/* Magnetic + glow buttons */
+.magnet-link {
+  display: inline-block;
+  position: relative;
+  transition: transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+
+.glow-btn {
+  position: relative;
+  isolation: isolate;
+  transition:
+    transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
+    filter 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.glow-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at center,
+    rgba(58, 155, 231, 0.55) 0%,
+    rgba(58, 155, 231, 0.15) 40%,
+    transparent 70%
+  );
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  z-index: -1;
+}
+.glow-btn:hover::before {
+  opacity: 1;
+}
+.glow-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Chart */
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes chart-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes signal-ring {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  70%  { transform: scale(2.2); opacity: 0;    }
+  100% { transform: scale(2.2); opacity: 0;    }
+}
+
+/* ─── A11y ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .hero-word {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .beam-card::before,
+  .beam-card::after {
+    transition: none !important;
+  }
+  .glow-btn::before {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

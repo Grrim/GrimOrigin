@@ -1,0 +1,19 @@
+import { getHoverNestedStyles, getHoverStyles } from '../../js/hover/getHoverStyle.mjs';
+
+const getHoverStyle = (opts) => {
+    const { borderRadius } = opts || {};
+    return {
+        ...getHoverStyles(borderRadius),
+        '@media': {
+            '(hover:hover)': {
+                selectors: {
+                    '&:hover': {
+                        ...getHoverNestedStyles(),
+                    },
+                },
+            },
+        },
+    };
+};
+
+export { getHoverStyle };

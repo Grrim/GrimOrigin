@@ -1,0 +1,13 @@
+import { getFocusNestedStyles, getFocusStyles } from '../../js/focus/getFocusStyle.mjs';
+
+const getFocusStyle = (opts) => {
+    const { borderRadius, offset } = opts || {};
+    return {
+        ...getFocusStyles(borderRadius),
+        selectors: {
+            ...getFocusNestedStyles(offset),
+        },
+    };
+};
+
+export { getFocusStyle };

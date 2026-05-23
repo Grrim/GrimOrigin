@@ -1,0 +1,44 @@
+import { jsxs, Fragment, jsx } from 'react/jsx-runtime';
+import { Component } from 'react';
+import '../../provider.mjs';
+import { splitChildren } from '../../splitChildren.mjs';
+import { minifyCss } from '../../minifyCss.mjs';
+import { getRadioGroupCss as getComponentCss$x } from '../../../../../../components/dist/styles/esm/styles-entry.mjs';
+import { labelId, descriptionId, getFieldsetAriaAttributes } from '../../../../../../components/dist/utils/esm/utils-entry.mjs';
+import { loadingId, LoadingMessage } from './loading-message.mjs';
+import { Label } from './label.mjs';
+import { messageId, StateMessage } from './state-message.mjs';
+import { PSpinner } from '../components/spinner.wrapper.mjs';
+
+/**
+ * @slot {"name": "label", "description": "Shows a label. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ * @slot {"name": "label-after", "description": "Places additional content after the label text (for content that should not be part of the label, e.g. external links or `p-popover`)."}
+ * @slot {"name": "description", "description": "Shows a description. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ * @slot {"name": "", "description": "Default slot for the p-radio-group-option tags."}
+ * @slot {"name": "message", "description": "Shows a state message. Only [phrasing content](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#Phrasing_content) is allowed."}
+ */
+class DSRRadioGroup extends Component {
+    host;
+    // The "name" property is reflected as an attribute to ensure compatibility with native form submission.
+    // In the React wrapper, all props are synced as properties on the element ref, so reflecting "name" as an attribute ensures it is properly handled in the form submission process.
+    internals;
+    initialLoading = false;
+    defaultValue;
+    radioGroupOptions = [];
+    preventOptionUpdate = false; // Used to prevent value watcher from updating options when options are already updated
+    formResetCallback() {
+        // triggers value watcher
+    }
+    formDisabledCallback() {
+        // Called when a parent fieldset is disabled or enabled
+    }
+    formStateRestoreCallback() {
+    }
+    render() {
+        const { namedSlotChildren} = splitChildren(this.props.children);
+        const style = minifyCss(getComponentCss$x(this.props.disabled, this.props.loading, this.props.hideLabel, this.props.state, this.props.compact, this.props.direction, this.props.theme));
+        return (jsxs(Fragment, { children: [jsxs("template", { shadowroot: "open", shadowrootmode: "open", shadowrootdelegatesfocus: "true", children: [jsx("style", { dangerouslySetInnerHTML: { __html: style } }), jsxs("fieldset", { className: "root", disabled: this.props.disabled, ...getFieldsetAriaAttributes(this.props.required, this.props.state === 'error', { role: 'radiogroup' }), "aria-describedby": this.props.loading ? loadingId : `${descriptionId} ${messageId}`, "aria-labelledby": labelId, children: [jsx(Label, { hasLabel: this.props.label || namedSlotChildren.filter(({ props: { slot } }) => slot === 'label').length > 0, hasDescription: this.props.description || namedSlotChildren.filter(({ props: { slot } }) => slot === 'description').length > 0, host: null, tag: "div", label: this.props.label, description: this.props.description, isRequired: this.props.required, isLoading: this.props.loading, isDisabled: this.props.disabled }), jsxs("div", { className: "wrapper", children: [jsx("slot", {}), this.props.loading && (jsx(PSpinner, { className: "spinner", size: "inherit", theme: this.props.theme, "aria-hidden": "true" }))] }), jsx(StateMessage, { hasMessage: (this.props.message || namedSlotChildren.filter(({ props: { slot } }) => slot === 'message').length > 0) && ['success', 'error'].includes(this.props.state), state: this.props.state, message: this.props.message, theme: this.props.theme, host: null }), jsx(LoadingMessage, { loading: this.props.loading, initialLoading: this.props.initialLoading })] })] }), this.props.children] }));
+    }
+}
+
+export { DSRRadioGroup };
