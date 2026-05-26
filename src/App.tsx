@@ -69,7 +69,7 @@ function Hero() {
   return (
     <section id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
       <div aria-hidden data-parallax data-parallax-speed="-0.10" style={{ position: 'absolute', inset: '-10% -5% -10% -5%', backgroundImage: 'url(/hero-bg.webp)', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'translate3d(0, var(--py, 0px), 0)', willChange: 'transform' }} />
-      <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(14,14,18,0.55) 0%, rgba(14,14,18,0.78) 55%, rgba(14,14,18,0.95) 90%, rgba(14,14,18,1) 100%)' }} />
+      <div aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(14,14,18,0.55) 0%, rgba(14,14,18,0.65) 30%, rgba(14,14,18,0.78) 55%, rgba(14,14,18,0.88) 75%, rgba(14,14,18,0.95) 90%, rgba(14,14,18,1) 100%)' }} />
       <GravityField />
       <div className="relative w-full mx-auto" style={{ zIndex: 2, maxWidth: TOKENS.containerMax, padding: `clamp(160px, 18vw, 240px) ${TOKENS.gutter} clamp(100px, 10vw, 180px)`, pointerEvents: 'none' }}>
         <div style={{ maxWidth: '900px', pointerEvents: 'auto', textAlign: 'center', margin: '0 auto' }}>

@@ -56,8 +56,8 @@ export function FloatingNav({ links, active }: Props) {
           WebkitBackdropFilter: 'blur(16px) saturate(160%)',
           border: `1px solid ${scrolled ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.06)'}`,
           boxShadow: scrolled
-            ? '0 4px 24px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.04)'
-            : '0 2px 12px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.03)',
+            ? '0 4px 24px rgba(0,0,0,0.50)'
+            : '0 2px 12px rgba(0,0,0,0.30)',
           transition: `padding 400ms ${TOKENS.ease}, background 400ms ${TOKENS.ease}, border-color 400ms ${TOKENS.ease}, box-shadow 400ms ${TOKENS.ease}`,
           display: 'flex',
           alignItems: 'center',

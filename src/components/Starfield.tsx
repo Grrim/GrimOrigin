@@ -10,25 +10,25 @@ import { useMemo } from 'react';
 function seededRandom(seed: number) {
   let s = seed;
   return () => {
-    s = (s * 16807) % 2147483647;
+    s = (s * 48271) % 2147483647;
     return (s - 1) / 2147483646;
   };
 }
 
-const STAR_COUNT = 30;
+const STAR_COUNT = 22;
 
 export function Starfield() {
   const stars = useMemo(() => {
-    const rng = seededRandom(42);
+    const rng = seededRandom(137);
     return Array.from({ length: STAR_COUNT }, (_, i) => ({
       id: i,
-      x: rng() * 100,
-      y: rng() * 100,
-      size: rng() * 2 + 1.5, // 1.5–3.5px core
-      halo: rng() * 12 + 8, // 8–20px glow
-      opacity: rng() * 0.35 + 0.15, // 0.15–0.50
-      delay: rng() * 8,
-      duration: rng() * 4 + 4, // 4–8s twinkle
+      x: rng() * 94 + 3,
+      y: rng() * 94 + 3,
+      size: rng() * 1.2 + 1, // 1–2.2px core
+      halo: rng() * 8 + 6, // 6–14px glow
+      opacity: rng() * 0.25 + 0.1, // 0.10–0.35
+      delay: rng() * 10,
+      duration: rng() * 5 + 5, // 5–10s twinkle
     }));
   }, []);
 
@@ -67,7 +67,7 @@ export function Starfield() {
               width: '100%',
               height: '100%',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(58,155,231,0.3) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(58,155,231,0.2) 0%, transparent 70%)',
             }}
           />
           {/* Bright core */}
@@ -77,8 +77,8 @@ export function Starfield() {
               width: `${star.size}px`,
               height: `${star.size}px`,
               borderRadius: '50%',
-              backgroundColor: 'rgba(255,255,255,0.9)',
-              boxShadow: '0 0 3px rgba(255,255,255,0.6)',
+              backgroundColor: 'rgba(255,255,255,0.85)',
+              boxShadow: '0 0 2px rgba(255,255,255,0.5)',
             }}
           />
         </span>
