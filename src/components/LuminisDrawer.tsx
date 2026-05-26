@@ -77,7 +77,7 @@ export function LuminisDrawer({ open, onClose }: Props) {
           width: 'min(720px, 100vw)',
           background: TOKENS.surfaceDeep,
           borderLeft: `1px solid ${TOKENS.borderSoft}`,
-          boxShadow: '-24px 0 80px rgba(0,0,0,0.50)',
+          boxShadow: open ? '-24px 0 80px rgba(0,0,0,0.50)' : 'none',
           transform: open ? 'translateX(0)' : 'translateX(100%)',
           transition: `transform 500ms ${TOKENS.easeOutExpo}`,
           zIndex: 101,

@@ -15,7 +15,7 @@ function seededRandom(seed: number) {
   };
 }
 
-const STAR_COUNT = 22;
+const STAR_COUNT = 320;
 
 export function Starfield() {
   const stars = useMemo(() => {
@@ -23,7 +23,7 @@ export function Starfield() {
     return Array.from({ length: STAR_COUNT }, (_, i) => ({
       id: i,
       x: rng() * 94 + 3,
-      y: rng() * 94 + 3,
+      y: rng() * 100,
       size: rng() * 1.2 + 1, // 1–2.2px core
       halo: rng() * 8 + 6, // 6–14px glow
       opacity: rng() * 0.25 + 0.1, // 0.10–0.35
@@ -36,8 +36,11 @@ export function Starfield() {
     <div
       aria-hidden
       style={{
-        position: 'fixed',
-        inset: 0,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
         pointerEvents: 'none',
         zIndex: 1,
         overflow: 'hidden',
