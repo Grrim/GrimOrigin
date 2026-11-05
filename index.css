@@ -286,3 +286,163 @@ html.lenis body {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
 }
+
+/* ─── App showcase ──────────────────────────────────────────────────────── */
+.app-row {
+  padding: clamp(28px, 3vw + 12px, 64px);
+}
+.app-row:hover {
+  border-color: color-mix(in srgb, var(--app-accent, #3A9BE7) 35%, transparent);
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 14px 24px;
+  cursor: pointer;
+}
+
+/* Back phone peeks out behind the front one (mirrored on flipped rows) */
+.phone-stack {
+  margin-right: clamp(0px, 4vw, 56px);
+}
+.is-flipped .phone-stack {
+  margin-right: 0;
+  margin-left: clamp(0px, 4vw, 56px);
+}
+.phone-back {
+  position: absolute;
+  inset: 0;
+  transform: translate(22%, 6%) rotate(6deg) scale(0.92);
+  opacity: 0.55;
+  filter: saturate(0.8);
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), opacity 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.app-row:hover .phone-back {
+  transform: translate(28%, 4%) rotate(9deg) scale(0.92);
+  opacity: 0.75;
+}
+.is-flipped .phone-back {
+  transform: translate(-22%, 6%) rotate(-6deg) scale(0.92);
+}
+.is-flipped.app-row:hover .phone-back {
+  transform: translate(-28%, 4%) rotate(-9deg) scale(0.92);
+}
+@media (max-width: 639px) {
+  .phone-stack { width: min(240px, 62vw) !important; margin: 0 !important; }
+  .phone-back { display: none; }
+}
+
+/* ─── App drawer ────────────────────────────────────────────────────────── */
+.icon-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: rgba(251, 252, 255, 0.7);
+  cursor: pointer;
+  transition: border-color 300ms cubic-bezier(0.32, 0.72, 0, 1), color 300ms cubic-bezier(0.32, 0.72, 0, 1), background 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.icon-btn:hover,
+.icon-btn:focus-visible {
+  border-color: var(--color-accent);
+  color: var(--color-primary);
+  background: rgba(58, 155, 231, 0.10);
+}
+
+.drawer-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  flex: 1;
+  min-height: 0;
+}
+.drawer-list {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-y: auto;
+  padding: 12px 0;
+}
+.drawer-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.drawer-item {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px clamp(20px, 1.5vw + 12px, 32px);
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: rgba(251, 252, 255, 0.7);
+  transition: color 300ms cubic-bezier(0.32, 0.72, 0, 1), background 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.drawer-item:hover {
+  color: var(--color-primary);
+}
+.drawer-item:focus-visible {
+  outline: 2px solid var(--app-accent, var(--color-accent));
+  outline-offset: -2px;
+}
+.drawer-item-bar {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: var(--app-accent, var(--color-accent));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.drawer-item[aria-current] .drawer-item-bar {
+  transform: none;
+}
+@media (max-width: 639px) {
+  .drawer-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .drawer-list {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0;
+  }
+  .drawer-list ul {
+    display: flex;
+  }
+  .drawer-item {
+    white-space: nowrap;
+    padding: 14px 18px;
+  }
+  .drawer-item-bar {
+    top: auto;
+    left: 18px;
+    right: 18px;
+    bottom: 0;
+    width: auto;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+}
+@keyframes chapter-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -8,6 +8,19 @@ Live: https://grrim.github.io/GrimOrigin/
 
 React 19, TypeScript, Vite, Tailwind CSS 4, Lenis (smooth scroll).
 
+## Editing content
+
+Apps and projects live in `src/content.ts`. Each app falls back to a placeholder
+until you fill in:
+
+- `icon`: square app icon, e.g. `'apps/luna/icon.png'` (file in `public/apps/luna/`)
+- `screenshots`: one or two portrait screenshots (~9:19.5); the first is the front phone
+- `links.googlePlay` / `links.appStore`: store URLs; without them the card shows a
+  "Notify me at launch" email button
+- `details.items`: the entries shown in the app's Explore drawer
+
+Projects take an optional `href` and `linkLabel`.
+
 ## Development
 
 ```bash

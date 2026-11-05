@@ -1,16 +1,18 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { PText, PIcon } from '@porsche-design-system/components-react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { TOKENS, TYPE } from './tokens';
+import { APPS, PROJECTS, asset, type Project } from './content';
 import { GravityField } from './components/GravityField';
 import { Starfield } from './components/Starfield';
 import { FloatingNav } from './components/FloatingNav';
-import { LuminisDrawer } from './components/LuminisDrawer';
+import { AppShowcase } from './components/AppShowcase';
+import { AppDrawer } from './components/AppDrawer';
 import { useScrollParallax } from './hooks/useScrollParallax';
 import { useLenis, smoothScrollTo } from './hooks/useLenis';
 import { useSpotlight } from './hooks/useSpotlight';
-import { useRef } from 'react';
 
-const NAV_LINKS = ['Games', 'Projects', 'About'];
+const NAV_LINKS = ['Apps', 'Projects', 'About'];
+const SECTION_LABELS = [...NAV_LINKS, 'Contact'];
+
 
 function useScrollReveal() {
   useEffect(() => {
@@ -34,7 +36,7 @@ function useActiveSection(ids: string[]) {
     const sections = allIds.map((id) => document.getElementById(id)).filter((x): x is HTMLElement => !!x);
     if (!sections.length) return;
     const io = new IntersectionObserver(
-      (entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { if (entry.target.id === 'hero') setActive(''); else { const label = NAV_LINKS.find((l) => l.toLowerCase() === entry.target.id) ?? ''; setActive(label); } } }); },
+      (entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { if (entry.target.id === 'hero') setActive(''); else { const label = SECTION_LABELS.find((l) => l.toLowerCase() === entry.target.id) ?? ''; setActive(label); } } }); },
       { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
     );
     sections.forEach((s) => io.observe(s));
@@ -43,22 +45,26 @@ function useActiveSection(ids: string[]) {
   return active;
 }
 
+const SECTION_IDS = SECTION_LABELS.map((l) => l.toLowerCase());
+
 export default function App() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawer, setDrawer] = useState({ id: APPS[0].id, open: false });
+  const closeDrawer = useCallback(() => setDrawer((d) => ({ ...d, open: false })), []);
   useLenis(); useScrollReveal(); useScrollParallax();
-  const activeSection = useActiveSection(NAV_LINKS.map((l) => l.toLowerCase()));
+  const activeSection = useActiveSection(SECTION_IDS);
+  const drawerApp = APPS.find((a) => a.id === drawer.id) ?? APPS[0];
 
   return (
     <div className="min-h-screen" style={{ ...TYPE.sans, background: '#0E0E12', color: TOKENS.textHigh, position: 'relative', overflow: 'hidden' }}>
       <Starfield />
       <FloatingNav links={NAV_LINKS} active={activeSection} />
       <Hero />
-      <Games onOpenLuminis={() => setDrawerOpen(true)} />
+      <Apps onOpen={(id) => setDrawer({ id, open: true })} />
       <Projects />
       <AboutSection />
       <ContactSection />
       <Footer />
-      <LuminisDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <AppDrawer app={drawerApp} open={drawer.open} onClose={closeDrawer} />
     </div>
   );
 }
@@ -80,7 +86,7 @@ function Hero() {
             We craft mobile apps that blend thoughtful design with deep functionality. From physics-driven games to everyday utility tools.
           </p>
           <div className="hero-word" style={{ ['--word-delay' as never]: '800ms', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
-            <button onClick={() => smoothScrollTo('games')} className="glow-btn" type="button" style={{ ...TYPE.mono, fontSize: '13px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: TOKENS.textHigh, background: TOKENS.accentSoft, border: `1px solid ${TOKENS.accentBorder}`, borderRadius: '999px', padding: '16px 32px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+            <button onClick={() => smoothScrollTo('apps')} className="glow-btn" type="button" style={{ ...TYPE.mono, fontSize: '13px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: TOKENS.textHigh, background: TOKENS.accentSoft, border: `1px solid ${TOKENS.accentBorder}`, borderRadius: '999px', padding: '16px 32px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
               Explore Our Apps <span aria-hidden style={{ fontSize: '16px', color: TOKENS.accent }}>↓</span>
             </button>
             <button onClick={() => smoothScrollTo('contact')} className="glow-btn" type="button" style={{ ...TYPE.mono, fontSize: '13px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: TOKENS.textMute, background: 'rgba(255,255,255,0.04)', border: `1px solid ${TOKENS.borderSoft}`, backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderRadius: '999px', padding: '16px 32px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
@@ -98,88 +104,42 @@ function Hero() {
   );
 }
 
-function Games({ onOpenLuminis }: { onOpenLuminis: () => void }) {
+function Apps({ onOpen }: { onOpen: (id: string) => void }) {
   return (
-    <Section id="games" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <SectionHeader eyebrow="/// Our Apps" meta="04 Titles · In Production" title={<>Built for <span style={{ color: TOKENS.accent }}>mobile</span></>} subtitle="From physics puzzles to everyday tools — each app is crafted with care, precision, and respect for the user." />
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(16px, 2vw, 28px)' }}>
-        <GameCard title="LUMINIS" subtitle="A 12-chapter physics puzzle through stellar evolution and deep space lore." status="Premiering Soon" tags={['Physics Puzzle', 'Matter.js', 'Narrative']} theme="nebula" privacyHref="luminis/privacy-policy.html" onClick={onOpenLuminis} />
-        <GameCard title="Luna" subtitle="A minimal, privacy-first menstrual cycle tracker with smart predictions and health insights." status="Premiering Soon" tags={['Health', 'Tracker', 'Privacy-first']} theme="minimal" privacyHref="luna/privacy-policy.html" />
-        <GameCard title="VARDEN FILES" subtitle="A “found phone” investigative thriller — dig through a missing person's messages, gather evidence, and uncover what happened." status="Premiering Soon" tags={['Investigation', 'Thriller', 'Narrative']} theme="singularity" privacyHref="varden-files/privacy-policy.html" />
-        <GameCard title="OFFLINE" subtitle="Digital detox companion — track screen-free time, set goals, and build healthier habits." status="In Development" tags={['Wellness', 'Habits', 'Minimalist']} theme="nebula" />
-      </div>
+    <Section id="apps">
+      <SectionHeader eyebrow="/// Our Apps" meta={`${String(APPS.length).padStart(2, '0')} Titles · In Production`} title={<>Built for <span style={{ color: TOKENS.accent }}>mobile</span></>} subtitle="From physics puzzles to everyday tools — each app is crafted with care, precision, and respect for the user." />
+      <AppShowcase apps={APPS} onOpen={onOpen} />
     </Section>
-  );
-}
-
-function GameCard({ title, subtitle, status, tags, theme, privacyHref, onClick }: { title: string; subtitle: string; status: string; tags: string[]; theme: 'nebula' | 'singularity' | 'minimal'; privacyHref?: string; onClick?: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState(false);
-  useSpotlight(ref);
-  const isFinal = status === 'Final Phase' || status === 'Premiering Soon';
-  const interactive = onClick ? {
-    role: 'button',
-    tabIndex: 0,
-    'aria-label': `${title} — more details`,
-    onClick,
-    onKeyDown: (e: React.KeyboardEvent) => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onClick(); } },
-    onFocus: () => setHovered(true),
-    onBlur: () => setHovered(false),
-  } : {};
-
-  return (
-    <div ref={ref} className="reveal beam-card" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} {...interactive} style={{ padding: 'clamp(28px, 2.5vw + 14px, 44px)', minHeight: 'clamp(300px, 28vw, 380px)', display: 'flex', flexDirection: 'column', cursor: onClick ? 'pointer' : 'default' }}>
-      {theme === 'nebula' && <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 30%, rgba(99,102,241,0.15) 0%, rgba(58,155,231,0.06) 40%, transparent 65%)', pointerEvents: 'none' }} />}
-      {theme === 'singularity' && <span aria-hidden style={{ position: 'absolute', top: '-20%', right: '-15%', width: '50%', height: '100%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(58,155,231,0.18) 0%, transparent 60%)', filter: 'blur(20px)', transform: hovered ? 'scale(1.08)' : 'scale(1)', transition: `transform 800ms ${TOKENS.easeOutExpo}`, pointerEvents: 'none' }} />}
-      {theme === 'minimal' && <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(58,155,231,0.04) 100%)', pointerEvents: 'none' }} />}
-
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '20px' }}>
-        <span style={{ ...TYPE.mono, display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: isFinal ? '#34d399' : TOKENS.accent, border: `1px solid ${isFinal ? 'rgba(52,211,153,0.40)' : TOKENS.accentBorder}`, background: isFinal ? 'rgba(52,211,153,0.10)' : TOKENS.accentSoft, borderRadius: '999px', padding: '5px 10px' }}>
-          <span aria-hidden style={{ width: '5px', height: '5px', borderRadius: '50%', background: isFinal ? '#34d399' : TOKENS.accent, boxShadow: `0 0 6px ${isFinal ? '#34d399' : TOKENS.accent}` }} />
-          {status}
-        </span>
-        {onClick && <PIcon name="arrow-right" size="small" color="contrast-medium" theme="dark" style={{ transform: hovered ? 'translateX(3px)' : 'translateX(0)', transition: `transform 300ms ${TOKENS.ease}`, color: hovered ? TOKENS.accent : undefined }} />}
-      </div>
-
-      <div style={{ marginTop: 'auto' }}>
-        <h3 style={{ fontSize: 'clamp(28px, 3vw + 10px, 44px)', fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.05, color: TOKENS.textHigh, marginBottom: '12px' }}>{title}</h3>
-        <p style={{ fontSize: 'clamp(13px, 0.3vw + 11px, 15px)', lineHeight: 1.7, color: TOKENS.textMute, marginBottom: '16px' }}>{subtitle}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {tags.map((tag) => (<span key={tag} style={{ ...TYPE.mono, fontSize: '10px', letterSpacing: '0.10em', color: TOKENS.textMute, border: `1px solid ${TOKENS.borderSoft}`, borderRadius: '4px', padding: '4px 8px', background: 'rgba(0,0,0,0.30)' }}>{tag}</span>))}
-        </div>
-        {privacyHref && (
-          <a href={`${import.meta.env.BASE_URL}${privacyHref}`} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} className="text-link" style={{ ...TYPE.mono, display: 'inline-block', marginTop: '18px', fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-            Privacy Policy →
-          </a>
-        )}
-      </div>
-    </div>
   );
 }
 
 function Projects() {
   return (
-    <Section id="projects" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <Section id="projects">
       <SectionHeader eyebrow="/// Other Projects" meta="Beyond Apps" title={<>More from <span style={{ color: TOKENS.accent }}>Grim Origin</span></>} subtitle="Content creation and research projects that feed back into our design philosophy." />
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(16px, 2vw, 28px)' }}>
-        <ProjectCard title="Grim History" category="Media Channel" description="Exploring historical anomalies, medieval mysteries, and dark history through engaging short-form video content." tags={['YouTube', 'Storytelling', 'Research']} />
-        <ProjectCard title="Astrophysics Simulations" category="Interactive Lab" description="Web-based 2D/3D interactive simulations focusing on stellar dynamics, thermodynamics, and black hole behaviors." tags={['TypeScript', 'WebGL', 'Physics']} />
+        {PROJECTS.map((p) => <ProjectCard key={p.title} project={p} />)}
       </div>
     </Section>
   );
 }
 
-function ProjectCard({ title, category, description, tags }: { title: string; category: string; description: string; tags: string[] }) {
+function ProjectCard({ project: { title, category, description, tags, href, linkLabel } }: { project: Project }) {
   const ref = useRef<HTMLDivElement>(null);
   useSpotlight(ref);
   return (
-    <div ref={ref} className="reveal beam-card" style={{ padding: 'clamp(28px, 2.5vw + 16px, 44px)' }}>
-      <span style={{ ...TYPE.mono, display: 'inline-flex', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: TOKENS.textMute, border: `1px solid ${TOKENS.borderSoft}`, background: 'rgba(0,0,0,0.30)', borderRadius: '999px', padding: '5px 10px', marginBottom: '20px' }}>{category}</span>
+    <div ref={ref} className="reveal beam-card" style={{ padding: 'clamp(28px, 2.5vw + 16px, 44px)', display: 'flex', flexDirection: 'column' }}>
+      <span style={{ ...TYPE.mono, alignSelf: 'flex-start', display: 'inline-flex', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: TOKENS.textMute, border: `1px solid ${TOKENS.borderSoft}`, background: 'rgba(0,0,0,0.30)', borderRadius: '999px', padding: '5px 10px', marginBottom: '20px' }}>{category}</span>
       <h3 style={{ fontSize: 'clamp(24px, 2.5vw + 12px, 36px)', fontWeight: 600, letterSpacing: '-0.015em', lineHeight: 1.1, color: TOKENS.textHigh, marginBottom: '14px' }}>{title}</h3>
       <p style={{ fontSize: 'clamp(14px, 0.3vw + 12px, 16px)', lineHeight: 1.75, color: TOKENS.textMute, marginBottom: '20px' }}>{description}</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {tags.map((tag) => (<span key={tag} style={{ ...TYPE.mono, fontSize: '10px', letterSpacing: '0.10em', color: TOKENS.textMute, border: `1px solid ${TOKENS.borderSoft}`, borderRadius: '4px', padding: '4px 8px', background: 'rgba(0,0,0,0.30)' }}>{tag}</span>))}
       </div>
+      {href && (
+        <a href={href} target="_blank" rel="noopener" className="text-link" style={{ ...TYPE.mono, alignSelf: 'flex-start', marginTop: '24px', fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+          {linkLabel ?? 'Open'} →
+        </a>
+      )}
     </div>
   );
 }
@@ -205,14 +165,14 @@ function AboutSection() {
       <div className="reveal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 2vw, 32px)', flexWrap: 'wrap', paddingTop: 'clamp(24px, 3vw, 40px)', borderTop: `1px solid ${TOKENS.borderSoft}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', border: `1.5px solid ${TOKENS.accentBorder}`, flexShrink: 0 }}>
-            <img src={`${import.meta.env.BASE_URL}avatar.webp`} alt="Grzegorz" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
+            <img src={asset('avatar.webp')} alt="Grzegorz" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
           </div>
           <span style={{ fontSize: '14px', color: TOKENS.textMute }}>
             Founded by <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Grzegorz</strong>
           </span>
         </div>
         <span style={{ width: '1px', height: '20px', background: TOKENS.borderSoft }} />
-        <StatBlock value="04" label="Apps" />
+        <StatBlock value={String(APPS.length).padStart(2, '0')} label="Apps" />
         <StatBlock value="2026" label="Founded" />
         <StatBlock value="PL" label="Based" />
       </div>
@@ -231,7 +191,7 @@ function StatBlock({ value, label }: { value: string; label: string }) {
 
 function ContactSection() {
   return (
-    <Section id="contact" soft={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(58,155,231,0.08) 0%, transparent 55%)' }} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <Section id="contact" soft={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(58,155,231,0.08) 0%, transparent 55%)' }} style={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <div className="reveal" style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
         <Eyebrow>
           <span aria-hidden style={{ position: 'relative', width: '7px', height: '7px', display: 'inline-flex' }}>
@@ -344,7 +304,7 @@ function Footer() {
     <>
       <footer style={{ borderTop: `1px solid ${TOKENS.divider}`, padding: `clamp(20px, 1.5vw + 12px, 36px) ${TOKENS.gutter}` }}>
         <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: TOKENS.containerMax, gap: 'clamp(12px, 1vw + 6px, 24px)' }}>
-          <PText size="x-small" theme="dark" color="contrast-medium">© {new Date().getFullYear()} Grim Origin. Indie apps from Poland.</PText>
+          <p style={{ margin: 0, fontSize: '12px', color: TOKENS.textMute }}>© {new Date().getFullYear()} Grim Origin. Indie apps from Poland.</p>
           <div style={{ display: 'flex', gap: 'clamp(16px, 1.25vw + 10px, 32px)' }}>
             <button type="button" onClick={() => setLegalOpen('privacy')} className="text-link" style={{ fontSize: '12px' }}>Privacy</button>
             <button type="button" onClick={() => setLegalOpen('terms')} className="text-link" style={{ fontSize: '12px' }}>Terms</button>

@@ -24,7 +24,7 @@ export const TOKENS = {
 export const TYPE = {
   sans: {
     fontFamily:
-      "'Porsche Next', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
   } as const,
   mono: {
     fontFamily:
@@ -43,3 +43,9 @@ export const TYPE = {
 export const prefersReducedMotion = (): boolean =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** '#RRGGBB' + alpha → 'rgba(r,g,b,a)' */
+export function withAlpha(hex: string, alpha: number) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+}
