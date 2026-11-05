@@ -101,24 +101,34 @@ function Hero() {
 function Games({ onOpenLuminis }: { onOpenLuminis: () => void }) {
   return (
     <Section id="games" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      <SectionHeader eyebrow="/// Our Apps" meta="03 Titles · In Production" title={<>Built for <span style={{ color: TOKENS.accent }}>mobile</span></>} subtitle="From physics puzzles to everyday tools — each app is crafted with care, precision, and respect for the user." />
-      <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 'clamp(16px, 2vw, 28px)' }}>
-        <GameCard title="LUMINIS" subtitle="A 12-chapter physics puzzle through stellar evolution and deep space lore." status="Premiering Soon" tags={['Physics Puzzle', 'Matter.js', 'Narrative']} theme="nebula" onClick={onOpenLuminis} />
-        <GameCard title="Luna" subtitle="A minimal, privacy-first menstrual cycle tracker with smart predictions and health insights." status="Premiering Soon" tags={['Health', 'Tracker', 'Privacy-first']} theme="minimal" />
-        <GameCard title="OFFLINE" subtitle="Digital detox companion — track screen-free time, set goals, and build healthier habits." status="In Development" tags={['Wellness', 'Habits', 'Minimalist']} theme="singularity" />
+      <SectionHeader eyebrow="/// Our Apps" meta="04 Titles · In Production" title={<>Built for <span style={{ color: TOKENS.accent }}>mobile</span></>} subtitle="From physics puzzles to everyday tools — each app is crafted with care, precision, and respect for the user." />
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(16px, 2vw, 28px)' }}>
+        <GameCard title="LUMINIS" subtitle="A 12-chapter physics puzzle through stellar evolution and deep space lore." status="Premiering Soon" tags={['Physics Puzzle', 'Matter.js', 'Narrative']} theme="nebula" privacyHref="luminis/privacy-policy.html" onClick={onOpenLuminis} />
+        <GameCard title="Luna" subtitle="A minimal, privacy-first menstrual cycle tracker with smart predictions and health insights." status="Premiering Soon" tags={['Health', 'Tracker', 'Privacy-first']} theme="minimal" privacyHref="luna/privacy-policy.html" />
+        <GameCard title="VARDEN FILES" subtitle="A “found phone” investigative thriller — dig through a missing person's messages, gather evidence, and uncover what happened." status="Premiering Soon" tags={['Investigation', 'Thriller', 'Narrative']} theme="singularity" privacyHref="varden-files/privacy-policy.html" />
+        <GameCard title="OFFLINE" subtitle="Digital detox companion — track screen-free time, set goals, and build healthier habits." status="In Development" tags={['Wellness', 'Habits', 'Minimalist']} theme="nebula" />
       </div>
     </Section>
   );
 }
 
-function GameCard({ title, subtitle, status, tags, theme, onClick }: { title: string; subtitle: string; status: string; tags: string[]; theme: 'nebula' | 'singularity' | 'minimal'; onClick?: () => void }) {
+function GameCard({ title, subtitle, status, tags, theme, privacyHref, onClick }: { title: string; subtitle: string; status: string; tags: string[]; theme: 'nebula' | 'singularity' | 'minimal'; privacyHref?: string; onClick?: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   useSpotlight(ref);
   const isFinal = status === 'Final Phase' || status === 'Premiering Soon';
+  const interactive = onClick ? {
+    role: 'button',
+    tabIndex: 0,
+    'aria-label': `${title} — more details`,
+    onClick,
+    onKeyDown: (e: React.KeyboardEvent) => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onClick(); } },
+    onFocus: () => setHovered(true),
+    onBlur: () => setHovered(false),
+  } : {};
 
   return (
-    <div ref={ref} className="reveal beam-card" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick} style={{ padding: 'clamp(28px, 2.5vw + 14px, 44px)', minHeight: 'clamp(300px, 28vw, 380px)', display: 'flex', flexDirection: 'column', cursor: onClick ? 'pointer' : 'default' }}>
+    <div ref={ref} className="reveal beam-card" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} {...interactive} style={{ padding: 'clamp(28px, 2.5vw + 14px, 44px)', minHeight: 'clamp(300px, 28vw, 380px)', display: 'flex', flexDirection: 'column', cursor: onClick ? 'pointer' : 'default' }}>
       {theme === 'nebula' && <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 30%, rgba(99,102,241,0.15) 0%, rgba(58,155,231,0.06) 40%, transparent 65%)', pointerEvents: 'none' }} />}
       {theme === 'singularity' && <span aria-hidden style={{ position: 'absolute', top: '-20%', right: '-15%', width: '50%', height: '100%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(58,155,231,0.18) 0%, transparent 60%)', filter: 'blur(20px)', transform: hovered ? 'scale(1.08)' : 'scale(1)', transition: `transform 800ms ${TOKENS.easeOutExpo}`, pointerEvents: 'none' }} />}
       {theme === 'minimal' && <span aria-hidden style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(58,155,231,0.04) 100%)', pointerEvents: 'none' }} />}
@@ -137,6 +147,11 @@ function GameCard({ title, subtitle, status, tags, theme, onClick }: { title: st
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
           {tags.map((tag) => (<span key={tag} style={{ ...TYPE.mono, fontSize: '10px', letterSpacing: '0.10em', color: TOKENS.textMute, border: `1px solid ${TOKENS.borderSoft}`, borderRadius: '4px', padding: '4px 8px', background: 'rgba(0,0,0,0.30)' }}>{tag}</span>))}
         </div>
+        {privacyHref && (
+          <a href={`${import.meta.env.BASE_URL}${privacyHref}`} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} className="text-link" style={{ ...TYPE.mono, display: 'inline-block', marginTop: '18px', fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+            Privacy Policy →
+          </a>
+        )}
       </div>
     </div>
   );
@@ -190,14 +205,14 @@ function AboutSection() {
       <div className="reveal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 2vw, 32px)', flexWrap: 'wrap', paddingTop: 'clamp(24px, 3vw, 40px)', borderTop: `1px solid ${TOKENS.borderSoft}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', border: `1.5px solid ${TOKENS.accentBorder}`, flexShrink: 0 }}>
-            <img src="/avatar.webp" alt="Grzegorz" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
+            <img src={`${import.meta.env.BASE_URL}avatar.webp`} alt="Grzegorz" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" decoding="async" />
           </div>
           <span style={{ fontSize: '14px', color: TOKENS.textMute }}>
             Founded by <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Grzegorz</strong>
           </span>
         </div>
         <span style={{ width: '1px', height: '20px', background: TOKENS.borderSoft }} />
-        <StatBlock value="03" label="Apps" />
+        <StatBlock value="04" label="Apps" />
         <StatBlock value="2026" label="Founded" />
         <StatBlock value="PL" label="Based" />
       </div>
@@ -331,8 +346,8 @@ function Footer() {
         <div className="mx-auto flex flex-wrap items-center justify-between" style={{ maxWidth: TOKENS.containerMax, gap: 'clamp(12px, 1vw + 6px, 24px)' }}>
           <PText size="x-small" theme="dark" color="contrast-medium">© {new Date().getFullYear()} Grim Origin. Indie apps from Poland.</PText>
           <div style={{ display: 'flex', gap: 'clamp(16px, 1.25vw + 10px, 32px)' }}>
-            <button type="button" onClick={() => setLegalOpen('privacy')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: TOKENS.textMute, fontSize: '12px', textDecoration: 'underline', textUnderlineOffset: '3px', textDecorationColor: 'rgba(251,252,255,0.30)', transition: `color ${TOKENS.duration} ${TOKENS.ease}, text-decoration-color ${TOKENS.duration} ${TOKENS.ease}` }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = TOKENS.textHigh; (e.currentTarget as HTMLElement).style.textDecorationColor = TOKENS.textHigh; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = TOKENS.textMute; (e.currentTarget as HTMLElement).style.textDecorationColor = 'rgba(251,252,255,0.30)'; }}>Privacy</button>
-            <button type="button" onClick={() => setLegalOpen('terms')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: TOKENS.textMute, fontSize: '12px', textDecoration: 'underline', textUnderlineOffset: '3px', textDecorationColor: 'rgba(251,252,255,0.30)', transition: `color ${TOKENS.duration} ${TOKENS.ease}, text-decoration-color ${TOKENS.duration} ${TOKENS.ease}` }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = TOKENS.textHigh; (e.currentTarget as HTMLElement).style.textDecorationColor = TOKENS.textHigh; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = TOKENS.textMute; (e.currentTarget as HTMLElement).style.textDecorationColor = 'rgba(251,252,255,0.30)'; }}>Terms</button>
+            <button type="button" onClick={() => setLegalOpen('privacy')} className="text-link" style={{ fontSize: '12px' }}>Privacy</button>
+            <button type="button" onClick={() => setLegalOpen('terms')} className="text-link" style={{ fontSize: '12px' }}>Terms</button>
           </div>
         </div>
       </footer>

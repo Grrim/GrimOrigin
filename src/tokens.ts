@@ -1,4 +1,3 @@
-import type { PIcon } from '@porsche-design-system/components-react';
 
 export const TOKENS = {
   accent: '#3A9BE7',
@@ -40,8 +39,6 @@ export const TYPE = {
   spaceLg: 'clamp(20px, 1.5vw + 16px, 40px)',
   spaceXl: 'clamp(48px, 4vw + 32px, 96px)',
 };
-
-export type StackIcon = Parameters<typeof PIcon>[0]['name'];
 
 export const prefersReducedMotion = (): boolean =>
   typeof window !== 'undefined' &&
