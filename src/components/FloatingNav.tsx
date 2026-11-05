@@ -43,15 +43,15 @@ export function FloatingNav({ sections, active }: Props) {
     <nav aria-label="Primary" className={`site-nav${scrolled ? ' is-scrolled' : ''}`}>
       <div className="site-nav-inner">
         <button type="button" onClick={() => smoothScrollTo('hero')} aria-label="Grim Origin — back to top" className="nav-brand">
-          <span aria-hidden className="pulse-dot" />
-          Grim Origin
+          Grim Origin<span className="wordmark-dot">.</span>
+          <span className="nav-file">GO/2026</span>
         </button>
 
         <ul className="nav-links">
           {links.map((s, i) => (
             <li key={s.id}>
               <button type="button" onClick={() => smoothScrollTo(s.id)} className="nav-link" aria-current={active === s.id ? 'true' : undefined}>
-                <span className="nav-index">{String(i + 1).padStart(2, '0')}</span>
+                <span className="nav-index">§{String(i + 1).padStart(2, '0')}</span>
                 {s.label}
               </button>
             </li>
@@ -60,7 +60,7 @@ export function FloatingNav({ sections, active }: Props) {
 
         <span className="nav-mobile-label">{active === 'contact' ? '' : activeLabel}</span>
 
-        <span className="nav-time">PL {time}</span>
+        <span className="nav-time">PL · {time}</span>
 
         <button type="button" onClick={() => smoothScrollTo('contact')} className="btn btn-primary btn-sm" aria-current={active === 'contact' ? 'true' : undefined}>
           Contact

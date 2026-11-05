@@ -1,17 +1,17 @@
 
 export const TOKENS = {
-  accent: '#3A9BE7',
-  accentSoft: 'rgba(58,155,231,0.10)',
-  accentBorder: 'rgba(58,155,231,0.40)',
-  accentGlow: '0 12px 48px rgba(58,155,231,0.12)',
+  accent: '#FF5B24',
+  accentSoft: 'rgba(255,91,36,0.10)',
+  accentBorder: 'rgba(255,91,36,0.40)',
+  accentGlow: '0 12px 48px rgba(255,91,36,0.12)',
   surface: 'rgba(33,34,37,0.72)',
   surfaceAlt: 'rgba(22,23,26,0.88)',
-  surfaceDeep: 'rgba(14,14,18,0.96)',
-  divider: 'rgba(255,255,255,0.06)',
-  borderSoft: 'rgba(255,255,255,0.08)',
-  textMute: 'rgba(251,252,255,0.7)',
-  textDim: 'rgba(251,252,255,0.45)',
-  textHigh: '#FBFCFF',
+  surfaceDeep: 'rgba(14,13,11,0.97)',
+  divider: 'rgba(236,230,216,0.08)',
+  borderSoft: 'rgba(236,230,216,0.12)',
+  textMute: 'rgba(236,230,216,0.68)',
+  textDim: 'rgba(236,230,216,0.42)',
+  textHigh: '#ECE6D8',
   ease: 'cubic-bezier(0.32, 0.72, 0, 1)',
   easeOutExpo: 'cubic-bezier(0.16, 1, 0.3, 1)',
   duration: '300ms',
@@ -23,21 +23,20 @@ export const TOKENS = {
 
 export const TYPE = {
   sans: {
-    fontFamily:
-      "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+    fontFamily: "'Newsreader', Georgia, 'Times New Roman', serif",
   } as const,
   display: {
-    fontFamily:
-      "'Inter Tight', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+    fontFamily: "'Archivo', 'Arial Narrow', ui-sans-serif, sans-serif",
+    fontStretch: '62%',
+    textTransform: 'uppercase' as const,
   } as const,
   serif: {
-    fontFamily: "'Instrument Serif', Georgia, 'Times New Roman', serif",
+    fontFamily: "'Newsreader', Georgia, 'Times New Roman', serif",
     fontStyle: 'italic',
     fontWeight: 400,
   } as const,
   mono: {
-    fontFamily:
-      "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace",
+    fontFamily: "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace",
   } as const,
   eyebrow: {
     fontSize: '11px',

@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { TOKENS, TYPE } from './tokens';
 import { APPS, PROJECTS, asset } from './content';
-import { GravityField } from './components/GravityField';
 import { FloatingNav, type NavSection } from './components/FloatingNav';
 import { AppShowcase } from './components/AppShowcase';
 import { AppDrawer } from './components/AppDrawer';
+import { OrbitChart } from './components/OrbitChart';
 import { LegalModal } from './components/Legal';
 import { useLenis, smoothScrollTo } from './hooks/useLenis';
 import { useLocalTime } from './hooks/useLocalTime';
@@ -20,6 +19,7 @@ const SECTIONS: NavSection[] = [
 const SECTION_IDS = SECTIONS.map((s) => s.id);
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
+const ROMAN = ['I', 'II', 'III', 'IV', 'V'];
 
 function useScrollReveal() {
   useEffect(() => {
@@ -62,7 +62,8 @@ export default function App() {
   const drawerApp = APPS.find((a) => a.id === drawer.id) ?? APPS[0];
 
   return (
-    <div className="min-h-screen" style={{ ...TYPE.sans, background: 'var(--color-canvas)', color: TOKENS.textHigh, position: 'relative', overflow: 'clip' }}>
+    <div className="site">
+      <GridLines />
       <FloatingNav sections={SECTIONS} active={activeSection} />
       <main>
         <Hero />
@@ -79,6 +80,15 @@ export default function App() {
   );
 }
 
+/** Faint column rules behind the page — the catalogue's ruled paper. */
+function GridLines() {
+  return (
+    <div aria-hidden className="grid-lines">
+      <div className="container">{Array.from({ length: 6 }, (_, i) => <span key={i} />)}</div>
+    </div>
+  );
+}
+
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
@@ -86,40 +96,42 @@ function Hero() {
   const building = APPS.find((a) => a.status === 'Premiering Soon') ?? APPS[0];
   return (
     <section id="hero" className="hero">
-      <GravityField />
-      <div className="container hero-inner">
-        <ul className="hero-meta hero-word" style={{ ['--word-delay' as never]: '0ms' }}>
-          <li>Independent mobile studio</li>
-          <li>Est. 2026</li>
-          <li>Poland · {time}</li>
-        </ul>
+      <div className="container">
+        <dl className="cover-strip hero-word" style={{ ['--word-delay' as never]: '0ms' }}>
+          <div><dt>File</dt><dd>GO / 2026</dd></div>
+          <div><dt>Subject</dt><dd>Independent mobile studio</dd></div>
+          <div><dt>Coordinates</dt><dd>52°N 19°E · Poland</dd></div>
+          <div><dt>Local time</dt><dd>{time}</dd></div>
+        </dl>
 
-        <h1 className="hero-title">
-          <span className="hero-line"><span className="hero-word" style={{ ['--word-delay' as never]: '80ms' }}>Thoughtful apps</span></span>
-          <span className="hero-line"><span className="hero-word" style={{ ['--word-delay' as never]: '160ms' }}>and games, made</span></span>
-          <span className="hero-line"><span className="hero-word" style={{ ['--word-delay' as never]: '240ms' }}>in <em style={TYPE.serif}>Poland</em><span style={{ color: TOKENS.accent }}>.</span></span></span>
-        </h1>
-
-        <div className="hero-foot hero-word" style={{ ['--word-delay' as never]: '480ms' }}>
-          <p className="hero-lede">
-            Grim Origin designs and builds mobile games and everyday tools — physics-driven puzzles, narrative mysteries and privacy-first utilities. A small catalogue with high standards.
-          </p>
-          <div className="hero-actions">
-            <button type="button" onClick={() => smoothScrollTo('work')} className="btn btn-primary">
-              See the work <span aria-hidden className="btn-arrow">↓</span>
-            </button>
-            <button type="button" onClick={() => smoothScrollTo('contact')} className="btn btn-ghost">
-              Start a conversation <span aria-hidden className="btn-arrow">→</span>
-            </button>
+        <div className="cover">
+          <h1 className="wordmark">
+            <span className="hero-line"><span className="hero-word" style={{ ['--word-delay' as never]: '80ms' }}>Grim</span></span>
+            <span className="hero-line"><span className="hero-word" style={{ ['--word-delay' as never]: '180ms' }}>Origin<span className="wordmark-dot">.</span></span></span>
+          </h1>
+          <div className="cover-chart hero-word" style={{ ['--word-delay' as never]: '320ms' }}>
+            <OrbitChart apps={APPS} />
           </div>
         </div>
 
-        <button type="button" className="now-building hero-word" style={{ ['--word-delay' as never]: '640ms' }} onClick={() => smoothScrollTo('work')}>
-          <span aria-hidden className="pulse-dot" />
-          <span className="now-label">Now building</span>
-          <span className="now-title">{building.title}</span>
-          <span className="now-status">{building.status}</span>
-        </button>
+        <div className="cover-foot hero-word" style={{ ['--word-delay' as never]: '480ms' }}>
+          <p className="cover-lede">
+            Small games and tools about <em>how things begin</em> — stars, secrets, cycles and habits. Designed and built by one person in Poland.
+          </p>
+          <div className="cover-actions">
+            <button type="button" onClick={() => smoothScrollTo('work')} className="btn btn-primary">
+              Open the catalogue <span aria-hidden className="btn-arrow">↓</span>
+            </button>
+            <button type="button" onClick={() => smoothScrollTo('contact')} className="btn btn-ghost">
+              Write to the studio <span aria-hidden className="btn-arrow">→</span>
+            </button>
+          </div>
+          <button type="button" className="now-building" onClick={() => smoothScrollTo('work')}>
+            <span aria-hidden className="status-dot is-live" />
+            <span className="now-label">Now building</span>
+            <span className="now-title">{building.title}</span>
+          </button>
+        </div>
       </div>
     </section>
   );
@@ -129,7 +141,7 @@ function Marquee() {
   const items = [...APPS.map((a) => a.title), 'Physics puzzles', 'Narrative games', 'Privacy-first tools', 'Made in Poland'];
   const row = (hidden: boolean) => (
     <ul className="marquee-row" aria-hidden={hidden || undefined}>
-      {items.map((t) => (<li key={t}>{t}<span aria-hidden className="marquee-star">✦</span></li>))}
+      {items.map((t) => (<li key={t}>{t}<span aria-hidden className="marquee-sep">/</span></li>))}
     </ul>
   );
   return (
@@ -153,7 +165,7 @@ function SectionHead({ index, label, aside, title, intro }: { index: number; lab
   return (
     <header className="section-head reveal">
       <div className="section-rule">
-        <span className="section-index">({pad2(index)})</span>
+        <span className="section-index">§{pad2(index)}</span>
         <span className="section-label">{label}</span>
         <span aria-hidden className="section-line" />
         {aside && <span className="section-aside">{aside}</span>}
@@ -171,9 +183,9 @@ function Work({ onOpen }: { onOpen: (id: string) => void }) {
     <Section id="work">
       <SectionHead
         index={1}
-        label="Selected work"
-        aside={`${pad2(APPS.length)} titles · 2026`}
-        title={<>Games and apps, <em style={TYPE.serif}>built to last</em>.</>}
+        label="Catalogue"
+        aside={`${pad2(APPS.length)} entries · 2026`}
+        title={<>The work <em>so far</em></>}
         intro="Every title is designed, engineered and polished in-house — from the physics engine to the privacy policy."
       />
       <AppShowcase apps={APPS} onOpen={onOpen} />
@@ -188,21 +200,21 @@ function Labs() {
         index={2}
         label="Labs"
         aside="Beyond apps"
-        title={<>Side projects that <em style={TYPE.serif}>feed the work</em>.</>}
+        title={<>Side projects <em>that feed the work</em></>}
         intro="Research, storytelling and simulations — the experiments where ideas for the next title come from."
       />
       <ul className="lab-list reveal">
         {PROJECTS.map((p, i) => {
           const body = (
             <>
-              <span className="lab-index">{pad2(i + 1)}</span>
+              <span className="lab-index">L—{pad2(i + 1)}</span>
               <span className="lab-title">{p.title}</span>
               <span className="lab-desc">{p.description}</span>
               <span className="lab-meta">
                 <span>{p.category}</span>
                 <span className="lab-tags">{p.tags.join(' · ')}</span>
               </span>
-              <span className="lab-cta">{p.href ? <>{p.linkLabel ?? 'Open'} <span aria-hidden>↗</span></> : 'Soon'}</span>
+              <span className="lab-cta">{p.href ? <>{p.linkLabel ?? 'Open'} <span aria-hidden>{'↗︎'}</span></> : 'Link soon'}</span>
             </>
           );
           return (
@@ -216,50 +228,49 @@ function Labs() {
   );
 }
 
-const PRINCIPLES = [
-  { title: 'Craft over speed', body: 'Every title gets the time it needs. We don’t rush releases — we refine until it feels right.' },
-  { title: 'Respect the user', body: 'No ad spam, no dark patterns, no pay-to-win. Clean software that respects attention and privacy.' },
-  { title: 'Curiosity-driven', body: 'Astrophysics, medieval history, strength training — every obsession feeds back into the work.' },
+const ARTICLES = [
+  { title: 'Craft over speed', body: 'Every title gets the time it needs. Releases are not rushed — they are refined until they feel right.' },
+  { title: 'Respect the user', body: 'No ad spam, no dark patterns, no pay-to-win. Software that respects attention and privacy.' },
+  { title: 'Follow curiosity', body: 'Astrophysics, medieval history, strength training — every obsession feeds back into the work.' },
 ];
 
 function Studio() {
   const facts: [string, string][] = [
-    ['2026', 'Founded'],
-    [pad2(APPS.length), 'Titles in production'],
-    ['01', 'Person, end to end'],
-    ['PL', 'Based in Poland'],
+    ['Founded', '2026'],
+    ['Titles', pad2(APPS.length)],
+    ['Team', '01'],
+    ['Based', 'PL'],
   ];
   return (
     <Section id="studio">
-      <SectionHead index={3} label="Studio" aside="About" title={<>One person. <em style={TYPE.serif}>Studio standards.</em></>} />
+      <SectionHead index={3} label="Studio" aside="Charter" title={<>One person, <em>studio standards</em></>} />
       <div className="studio-grid">
         <div className="reveal">
           <p className="studio-statement">
-            Grim Origin is an independent studio from Poland, founded in 2026.{' '}
-            <span>We ship fewer things, but make each one count — games and tools that respect your attention, your privacy and your time.</span>
+            Grim Origin is an independent studio from Poland, founded in 2026. <em>It ships fewer things, but makes each one count</em> — games and tools that respect your attention, your privacy and your time.
           </p>
           <div className="founder">
-            <img src={asset('avatar.webp')} alt="" width={48} height={48} loading="lazy" decoding="async" />
+            <img src={asset('avatar.webp')} alt="" width={52} height={52} loading="lazy" decoding="async" />
             <div>
               <strong>Grzegorz</strong>
               <span>Founder · design &amp; development</span>
             </div>
           </div>
         </div>
-        <ol className="principles reveal">
-          {PRINCIPLES.map((p, i) => (
-            <li key={p.title} className="principle">
-              <span className="principle-index">{pad2(i + 1)}</span>
+        <ol className="articles reveal">
+          {ARTICLES.map((a, i) => (
+            <li key={a.title} className="article">
+              <span className="article-no">Art. {ROMAN[i]}</span>
               <div>
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
+                <h3>{a.title}</h3>
+                <p>{a.body}</p>
               </div>
             </li>
           ))}
         </ol>
       </div>
       <dl className="facts reveal">
-        {facts.map(([value, label]) => (
+        {facts.map(([label, value]) => (
           <div key={label} className="fact">
             <dt>{label}</dt>
             <dd>{value}</dd>
@@ -282,14 +293,15 @@ function Contact() {
   ];
   return (
     <Section id="contact" className="contact">
-      <SectionHead index={4} label="Contact" aside="Replies within 24 h" title={<>Have a project, a pitch <em style={TYPE.serif}>or a question?</em></>} />
+      <SectionHead index={4} label="Correspondence" aside="Replies within 24 h" title={<>Open a file <em>with the studio</em></>} />
       <div className="email-row reveal">
-        <a href={`mailto:${EMAIL}`} className="email-link">{EMAIL}<span aria-hidden className="email-arrow">↗</span></a>
+        <a href={`mailto:${EMAIL}`} className="email-link">{EMAIL}<svg aria-hidden className="email-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 12 12 4M5 4h7v7" /></svg></a>
         <button type="button" onClick={copy} className="btn btn-ghost btn-sm" aria-live="polite">{copied ? '✓ Copied' : 'Copy address'}</button>
       </div>
       <div className="topics reveal">
-        {topics.map(([title, body]) => (
+        {topics.map(([title, body], i) => (
           <div key={title} className="topic">
+            <span className="topic-no">{pad2(i + 1)}</span>
             <h3>{title}</h3>
             <p>{body}</p>
           </div>
@@ -308,16 +320,16 @@ function Footer({ onOpenApp, onOpenLegal }: { onOpenApp: (id: string) => void; o
       <div className="container">
         <div className="footer-cols">
           <div className="footer-brand">
-            <span className="footer-logo"><span aria-hidden className="pulse-dot" />Grim Origin</span>
-            <p>Independent mobile studio. Games and everyday tools, designed and built in Poland.</p>
+            <span className="footer-logo">Grim Origin<span className="wordmark-dot">.</span></span>
+            <p>Small games and tools about how things begin. Designed and built in Poland.</p>
           </div>
           <nav aria-label="Apps" className="footer-col">
-            <h2>Apps</h2>
-            <ul>{APPS.map((a) => (<li key={a.id}><button type="button" onClick={() => onOpenApp(a.id)}>{a.title}</button></li>))}</ul>
+            <h2>Catalogue</h2>
+            <ul>{APPS.map((a, i) => (<li key={a.id}><button type="button" onClick={() => onOpenApp(a.id)}><span className="footer-no">{String(i + 1).padStart(3, '0')}</span>{a.title}</button></li>))}</ul>
           </nav>
           <nav aria-label="Studio" className="footer-col">
-            <h2>Studio</h2>
-            <ul>{SECTIONS.map((s) => (<li key={s.id}><button type="button" onClick={() => smoothScrollTo(s.id)}>{s.label}</button></li>))}</ul>
+            <h2>Index</h2>
+            <ul>{SECTIONS.map((s, i) => (<li key={s.id}><button type="button" onClick={() => smoothScrollTo(s.id)}><span className="footer-no">§{pad2(i + 1)}</span>{s.label}</button></li>))}</ul>
           </nav>
           <nav aria-label="Legal" className="footer-col">
             <h2>Legal</h2>
@@ -333,8 +345,8 @@ function Footer({ onOpenApp, onOpenLegal }: { onOpenApp: (id: string) => void; o
       </div>
       <div aria-hidden className="footer-wordmark">Grim Origin</div>
       <div className="container footer-bar">
-        <span>© {new Date().getFullYear()} Grim Origin</span>
-        <span>Poland · {time}</span>
+        <span>© {new Date().getFullYear()} Grim Origin · File GO/2026</span>
+        <span>52°N 19°E · {time}</span>
         <button type="button" onClick={() => smoothScrollTo('hero')}>Back to top ↑</button>
       </div>
     </footer>
