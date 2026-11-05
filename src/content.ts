@@ -17,6 +17,7 @@ export type DetailItem = {
 export type App = {
   id: string;
   title: string;
+  kind: 'Game' | 'App';
   tagline: string;
   description: string;
   status: AppStatus;
@@ -60,6 +61,7 @@ export const APPS: App[] = [
   {
     id: 'luminis',
     title: 'LUMINIS',
+    kind: 'Game',
     tagline: 'Celestial Harmony',
     description: 'A 12-chapter physics puzzle through stellar evolution and deep space lore. Guide light through gravity wells, binary orbits and collapsing stars.',
     status: 'Premiering Soon',
@@ -88,6 +90,7 @@ export const APPS: App[] = [
   {
     id: 'varden-files',
     title: 'VARDEN FILES',
+    kind: 'Game',
     tagline: 'A found-phone mystery',
     description: 'An investigative thriller played entirely on a stranger’s phone. Read the messages, collect evidence, make choices and uncover what really happened.',
     status: 'Premiering Soon',
@@ -110,6 +113,7 @@ export const APPS: App[] = [
   {
     id: 'luna',
     title: 'Luna',
+    kind: 'App',
     tagline: 'Cycle tracking, kept private',
     description: 'A minimal, privacy-first menstrual cycle tracker with smart predictions and health insights.',
     status: 'Premiering Soon',
@@ -131,6 +135,7 @@ export const APPS: App[] = [
   {
     id: 'offline',
     title: 'OFFLINE',
+    kind: 'App',
     tagline: 'Digital detox companion',
     description: 'Track screen-free time, set goals, and build healthier habits — one quiet hour at a time.',
     status: 'In Development',

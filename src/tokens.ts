@@ -26,9 +26,18 @@ export const TYPE = {
     fontFamily:
       "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
   } as const,
+  display: {
+    fontFamily:
+      "'Inter Tight', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+  } as const,
+  serif: {
+    fontFamily: "'Instrument Serif', Georgia, 'Times New Roman', serif",
+    fontStyle: 'italic',
+    fontWeight: 400,
+  } as const,
   mono: {
     fontFamily:
-      "ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', 'Roboto Mono', monospace",
+      "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Mono', monospace",
   } as const,
   eyebrow: {
     fontSize: '11px',

@@ -9,14 +9,17 @@ export function AppShowcase({ apps, onOpen }: { apps: App[]; onOpen: (id: string
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px, 2vw, 28px)' }}>
       {apps.map((app, i) => (
-        <AppRow key={app.id} app={app} flip={i % 2 === 1} onOpen={() => onOpen(app.id)} />
+        <AppRow key={app.id} app={app} index={i} total={apps.length} onOpen={() => onOpen(app.id)} />
       ))}
     </div>
   );
 }
 
-function AppRow({ app, flip, onOpen }: { app: App; flip: boolean; onOpen: () => void }) {
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+function AppRow({ app, index, total, onOpen }: { app: App; index: number; total: number; onOpen: () => void }) {
   const ref = useRef<HTMLElement>(null);
+  const flip = index % 2 === 1;
   useSpotlight(ref);
   const live = app.status !== 'In Development';
   const statusColor = live ? '#34d399' : app.accent;
@@ -29,6 +32,10 @@ function AppRow({ app, flip, onOpen }: { app: App; flip: boolean; onOpen: () => 
         <div className={`lg:col-span-7 ${flip ? 'lg:order-2' : ''}`}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: 'clamp(20px, 2vw, 28px)' }}>
             <AppIcon app={app} size={64} />
+            <span className="app-meta">
+              <span>{pad2(index + 1)} / {pad2(total)}</span>
+              <span>{app.kind}</span>
+            </span>
             <span style={{ ...TYPE.mono, display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600, color: statusColor, border: `1px solid ${withAlpha(live ? '#34d399' : app.accent, 0.4)}`, background: withAlpha(live ? '#34d399' : app.accent, 0.1), borderRadius: '999px', padding: '5px 10px' }}>
               <span aria-hidden style={{ width: '5px', height: '5px', borderRadius: '50%', background: statusColor, boxShadow: `0 0 6px ${statusColor}` }} />
               {app.status}
@@ -36,7 +43,7 @@ function AppRow({ app, flip, onOpen }: { app: App; flip: boolean; onOpen: () => 
           </div>
 
           <div style={{ ...TYPE.mono, fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: app.accent, marginBottom: '10px' }}>{app.tagline}</div>
-          <h3 id={`app-${app.id}`} style={{ fontSize: 'clamp(34px, 3.5vw + 12px, 60px)', fontWeight: 600, letterSpacing: '-0.025em', lineHeight: 1, color: TOKENS.textHigh, margin: '0 0 18px' }}>{app.title}</h3>
+          <h3 id={`app-${app.id}`} style={{ ...TYPE.display, fontSize: 'clamp(34px, 3.5vw + 12px, 60px)', fontWeight: 600, letterSpacing: '-0.04em', lineHeight: 1, color: TOKENS.textHigh, margin: '0 0 18px' }}>{app.title}</h3>
           <p style={{ fontSize: 'clamp(15px, 0.4vw + 13px, 18px)', lineHeight: 1.7, color: TOKENS.textMute, margin: '0 0 22px', maxWidth: '560px' }}>{app.description}</p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: 'clamp(28px, 3vw, 40px)' }}>
@@ -45,8 +52,8 @@ function AppRow({ app, flip, onOpen }: { app: App; flip: boolean; onOpen: () => 
 
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px' }}>
             <StoreButtons app={app} />
-            <button type="button" onClick={onOpen} className="glow-btn pill-btn" aria-haspopup="dialog" style={{ ...TYPE.mono, color: TOKENS.textHigh, background: withAlpha(app.accent, 0.12), border: `1px solid ${withAlpha(app.accent, 0.45)}` }}>
-              Explore <span aria-hidden style={{ color: app.accent }}>→</span>
+            <button type="button" onClick={onOpen} className="btn btn-ghost" aria-haspopup="dialog">
+              Explore <span aria-hidden className="btn-arrow" style={{ color: app.accent }}>→</span>
             </button>
           </div>
 
@@ -78,7 +85,7 @@ function StoreButtons({ app }: { app: App }) {
   }
   const subject = encodeURIComponent(`Notify me: ${app.title} launch`);
   return (
-    <a href={`mailto:${CONTACT_EMAIL}?subject=${subject}`} className="glow-btn pill-btn" style={{ ...TYPE.mono, color: '#0E0E12', background: app.accent, border: `1px solid ${app.accent}`, textDecoration: 'none' }}>
+    <a href={`mailto:${CONTACT_EMAIL}?subject=${subject}`} className="btn app-cta" style={{ background: app.accent }}>
       {app.status === 'In Development' ? 'Follow development' : 'Notify me at launch'}
     </a>
   );
@@ -86,7 +93,7 @@ function StoreButtons({ app }: { app: App }) {
 
 function StoreLink({ href, store, accent }: { href: string; store: string; accent: string }) {
   return (
-    <a href={href} target="_blank" rel="noopener" className="glow-btn pill-btn" style={{ ...TYPE.mono, color: '#0E0E12', background: accent, border: `1px solid ${accent}`, textDecoration: 'none' }}>
+    <a href={href} target="_blank" rel="noopener" className="btn app-cta" style={{ background: accent }}>
       Get it on {store}
     </a>
   );
