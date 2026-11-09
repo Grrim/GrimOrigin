@@ -5,7 +5,7 @@
 // Images: put files in /public (e.g. public/apps/luna/icon.png) and reference
 // them without a leading slash: icon: 'apps/luna/icon.png'.
 
-export type AppStatus = 'Available' | 'Premiering Soon' | 'In Development';
+export type AppStatus = 'Available' | 'Closed Testing' | 'Premiering Soon' | 'In Development';
 
 export type DetailItem = {
   title: string;
@@ -42,20 +42,10 @@ export type Project = {
   linkLabel?: string;
 };
 
-const LUMINIS_CHAPTERS: [string, string][] = [
-  ['Ignition', 'A protostar collapses inward. Hydrogen begins to fuse — the first photon escapes the cradle.'],
-  ['Main Sequence', 'Equilibrium settles. Gravity pulls, radiation pushes. A long quiet stability begins.'],
-  ['Cosmic Dust', 'Drift through nebular fields. Particles cluster under weak gravity, sketching new geometries.'],
-  ['Red Giant', 'The core contracts, the envelope swells. Outer layers bleed crimson into the void.'],
-  ['Helium Flash', 'A sudden ignition deep in the core. The puzzle reshapes itself in a single brilliant pulse.'],
-  ['The Companion', 'A binary partner enters orbit. Mutual gravity bends the path of every falling object.'],
-  ['Stellar Winds', 'Mass shedding. Light pressure becomes a literal force shaping the level around you.'],
-  ['Planetary Nebula', 'A glowing shell expands outward. Color, symmetry, and silence converge.'],
-  ['White Dwarf', 'Density beyond intuition. Each step echoes through degenerate matter.'],
-  ['Supernova', 'A constraint shatters. Energy releases. The board rearranges itself around the blast.'],
-  ['Neutron Star', 'Spin and magnetism dominate. Lighthouse beams sweep across the play field.'],
-  ['Singularity', 'The final chapter. Geometry inverts. The puzzle solves itself only by letting go.'],
-];
+// Text below mirrors the Google Play store listings (Play Console, Nov 2026).
+// All three released titles are currently in closed testing on Google Play.
+
+const shots = (id: string, n = 4) => Array.from({ length: n }, (_, i) => `apps/${id}/shot-${i + 1}.webp`);
 
 export const APPS: App[] = [
   {
@@ -63,50 +53,53 @@ export const APPS: App[] = [
     title: 'LUMINIS',
     kind: 'Game',
     tagline: 'Celestial Harmony',
-    description: 'A 12-chapter physics puzzle through stellar evolution and deep space lore. Guide light through gravity wells, binary orbits and collapsing stars.',
-    status: 'Premiering Soon',
-    tags: ['Physics Puzzle', 'Matter.js', 'Narrative'],
+    description: 'Draw beams of light and guide falling stars home. A calm cosmic puzzle: swipe to draw glowing lines and bounce every star into the receptor of its colour — 120 hand-crafted levels across 12 zodiac chapters.',
+    status: 'Closed Testing',
+    tags: ['Puzzle', 'Physics', 'Relaxing'],
     accent: '#6C7BFF',
+    icon: 'apps/luminis/icon.webp',
+    screenshots: shots('luminis'),
     privacyHref: 'luminis/privacy-policy.html',
     details: {
-      eyebrow: 'LUMINIS · Deep Dive',
-      heading: 'Stellar Evolution',
-      itemLabel: 'Chapter',
-      items: LUMINIS_CHAPTERS.map(([title, body], i) => {
-        const n = i + 1;
-        return {
-          title,
-          body,
-          meta: [
-            ['luminosity', `${(n * 0.42 + 1.2).toFixed(2)} L☉`],
-            ['radius', `${(n * 1.8 + 0.4).toFixed(1)} R☉`],
-            ['temp', `${(8000 - n * 320).toLocaleString('en-US')} K`],
-            ['age', `${(n * 0.85).toFixed(2)} Gyr`],
-          ],
-        };
-      }),
+      eyebrow: 'LUMINIS · Store listing',
+      heading: 'Draw light. Guide the stars.',
+      itemLabel: 'Feature',
+      items: [
+        { title: 'A journey through the zodiac', body: '120 hand-crafted levels across 12 chapters. Each chapter awakens a new constellation — from Aries to Pisces — and reveals a new verse of an ancient, poetic story.', meta: [['levels', '120'], ['chapters', '12']] },
+        { title: 'Master cosmic forces', body: 'Moving light rails, vortexes, pulsars, repulsors, splitters, nebula clouds, cosmic wind and even reversed gravity. Every chapter brings something new to outsmart.' },
+        { title: 'Resonance combos', body: 'Sort stars in a row without mistakes to build Resonance combos and multiply your essence. Earn up to three stars on every level.' },
+        { title: 'Meet Ognik', body: 'A friendly little spirit guides you through the journey, cheers you on and shares the secrets of the universe.' },
+        { title: 'Celestial powers', body: 'Unlock six abilities as you progress — Stasis, Lift, Magnet, Shield, Chrono and Nova — and choose cosmic relics before each level.' },
+        { title: 'More ways to play', body: 'Endless Void to play at your own pace, a Daily Ritual challenge every day and a new Event Horizon challenge every week.' },
+        { title: 'Make it yours', body: 'Collect stardust and unlock new light colours, Ognik variants and visual themes.' },
+        { title: 'Calm by design', body: 'A soothing synthesized soundscape that reacts to your moves. Works fully offline, with high-contrast mode and adjustable haptics.', meta: [['ads', 'none'], ['in-app purchases', 'none'], ['languages', 'EN · PL · DE · FR · IT']] },
+      ],
     },
   },
   {
     id: 'varden-files',
     title: 'VARDEN FILES',
     kind: 'Game',
-    tagline: 'A found-phone mystery',
-    description: 'An investigative thriller played entirely on a stranger’s phone. Read the messages, collect evidence, make choices and uncover what really happened.',
-    status: 'Premiering Soon',
+    tagline: 'Found phones. Missing owners.',
+    description: 'An investigative found-phone thriller series set in the corrupt city of Varden. No cutscenes, no narrator — only a stranger’s messages, photos, notes, emails, voicemails and browser history. Unlock them, read everything, find the truth.',
+    status: 'Closed Testing',
     tags: ['Investigation', 'Thriller', 'Narrative'],
     accent: '#39C5BB',
+    icon: 'apps/varden-files/icon.webp',
+    screenshots: shots('varden-files'),
     privacyHref: 'varden-files/privacy-policy.html',
     details: {
-      eyebrow: 'VARDEN FILES · Case Notes',
+      eyebrow: 'VARDEN FILES · Evidence locker',
       heading: 'How it plays',
       itemLabel: 'Note',
       items: [
-        { title: 'A phone that isn’t yours', body: 'Everything happens inside a found device — chats, photos, notes and call logs are your only leads.' },
-        { title: 'Collect the evidence', body: 'Pin messages and media as evidence and connect them to build your theory of the case.' },
-        { title: 'Choices that matter', body: 'Dialogue choices change who trusts you, what you learn and which ending you reach.' },
-        { title: 'It talks back', body: 'Story-driven local notifications keep the case alive between sessions.' },
-        { title: 'Private by design', body: 'No account, no ads, no in-app purchases. Your progress never leaves your phone.' },
+        { title: 'Case #01: Her Phone', body: 'Nina Kessler, a 28-year-old media analyst, vanishes near Greywood Forest. Her phone was active 7 minutes ago.' },
+        { title: 'Case #02: The Last Shift', body: 'A paramedic’s phone left in locker 14 after a night that went wrong. A state witness, a missing briefcase, and a doctor who knows too much.' },
+        { title: 'More cases coming', body: 'Four more devices are already secured in the evidence locker — new cases arrive in free updates.' },
+        { title: 'A phone that feels real', body: 'Thirteen working apps: messages, gallery with photo metadata, notes, files, browser with private mode, email, maps, voice recorder, calendar, contacts, call log and more. Clues hide between apps.' },
+        { title: 'Your choices matter', body: 'Reply to the people texting the owner, attach evidence to your chats or type answers yourself. Earn or lose trust. Multiple endings per case, plus New Game+.' },
+        { title: 'Real puzzles', body: 'Crack PINs from details the owner left behind, recover deleted emails from fragments, match voices on recordings and reconstruct routes on the map.' },
+        { title: 'Fair and offline-friendly', body: 'Completely free. No ads, no in-app purchases, no account and no personal data collected. Progress is saved so you can continue a case anytime.', meta: [['languages', 'PL · EN'], ['recommended', '16+']] },
       ],
     },
   },
@@ -114,21 +107,26 @@ export const APPS: App[] = [
     id: 'luna',
     title: 'Luna',
     kind: 'App',
-    tagline: 'Cycle tracking, kept private',
-    description: 'A minimal, privacy-first menstrual cycle tracker with smart predictions and health insights.',
-    status: 'Premiering Soon',
-    tags: ['Health', 'Tracker', 'Privacy-first'],
+    tagline: 'Private cycle & ovulation calendar',
+    description: 'A calm, medically responsible and 100% private space to track your cycle, ovulation phases and wellbeing. Fully offline — no sign-in, no ads.',
+    status: 'Closed Testing',
+    tags: ['Health', 'Cycle tracker', 'Privacy-first'],
     accent: '#F28AB2',
+    icon: 'apps/luna/icon.webp',
+    screenshots: shots('luna'),
     privacyHref: 'luna/privacy-policy.html',
     details: {
       eyebrow: 'Luna · Overview',
       heading: 'What Luna does',
       itemLabel: 'Feature',
       items: [
-        { title: 'Smart predictions', body: 'Period and fertile-window predictions that adapt to your own cycle history.' },
-        { title: 'Daily log in seconds', body: 'Symptoms, mood and notes with a calm, minimal interface.' },
-        { title: 'Health insights', body: 'Spot patterns across cycles with clear, readable summaries.' },
-        { title: 'Your data stays yours', body: 'Privacy-first by default — see the privacy policy for exactly what is stored and where.' },
+        { title: 'Truly offline', body: 'Luna has no INTERNET permission — it physically cannot send your data anywhere. No sign-in, no accounts, no cloud; Android cloud backup is disabled by default.' },
+        { title: 'AES-256 encryption', body: 'The local database is fully encrypted with AES-256 (SQLCipher), with the key held in the hardware-backed Android Keystore.' },
+        { title: 'Biometric lock', body: 'Instant fingerprint or face unlock, plus a discreet mode for public places.' },
+        { title: 'FIGO 2018 predictions', body: 'The prediction engine follows the cycle norms recommended by the International Federation of Gynecology and Obstetrics (FIGO 2018).' },
+        { title: 'Honest confidence score', body: 'Luna tells you how much each prediction relies on your own history versus general norms, and turns off fertile-window estimates for hormonal methods that suppress ovulation.' },
+        { title: 'Calm by design', body: 'Soft-minimalist design with a cycle ring, a biorhythm wave in insights and 200+ rotating wellness tips. Zero ads, zero subscriptions, zero notification spam.' },
+        { title: 'Important', body: 'Luna is for cycle self-observation and wellness education only. It is not a medical device, does not diagnose, and must not be used as contraception.' },
       ],
     },
   },

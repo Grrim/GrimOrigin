@@ -93,7 +93,7 @@ function GridLines() {
 
 function Hero() {
   const time = useLocalTime();
-  const building = APPS.find((a) => a.status === 'Premiering Soon') ?? APPS[0];
+  const building = APPS.find((a) => a.status === 'In Development') ?? APPS[0];
   return (
     <section id="hero" className="hero">
       <div className="container">

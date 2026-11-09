@@ -22,7 +22,7 @@ function Entry({ app, index, onOpen }: { app: App; index: number; onOpen: () => 
     ['Type', app.kind],
     ['Genre', app.tags.join(', ')],
     ['Dossier', `${app.details.items.length} ${app.details.itemLabel.toLowerCase()}s`],
-    ['Status', app.status],
+    ['Status', app.status === 'Closed Testing' ? 'Closed testing on Google Play' : app.status],
   ];
 
   return (
@@ -85,6 +85,15 @@ function StoreButtons({ app }: { app: App }) {
         {googlePlay && <a href={googlePlay} target="_blank" rel="noopener" className="btn btn-primary">Google Play <span aria-hidden className="btn-arrow">{'↗︎'}</span></a>}
         {appStore && <a href={appStore} target="_blank" rel="noopener" className="btn btn-primary">App Store <span aria-hidden className="btn-arrow">{'↗︎'}</span></a>}
       </>
+    );
+  }
+  if (app.status === 'Closed Testing') {
+    const subject = encodeURIComponent(`Closed test access: ${app.title}`);
+    const body = encodeURIComponent('Hi! I would like to join the closed test on Google Play.\nMy Google account e-mail: ');
+    return (
+      <a href={`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`} className="btn btn-primary">
+        Join the closed test
+      </a>
     );
   }
   const subject = encodeURIComponent(`Notify me: ${app.title} launch`);
