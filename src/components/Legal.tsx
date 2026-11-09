@@ -86,7 +86,7 @@ function PrivacyContent() {
   return (
     <div>
       <p style={{ fontSize: '14px', lineHeight: 1.7, color: TOKENS.textMute, marginTop: 0 }}>
-        Grim Origin (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is a sole-proprietor indie studio based in Poland. This Privacy Policy explains how we collect, use, disclose, and protect personal information when you visit our website (grrim.github.io/GrimOrigin) or use our mobile applications, including LUMINIS, Luna, and OFFLINE (collectively, the &quot;Services&quot;). We are committed to data minimization and full compliance with the EU General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA/CPRA), the Children&apos;s Online Privacy Protection Act (COPPA), and the Google Play User Data Policy.
+        Grim Origin (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is a sole-proprietor indie studio based in Poland. This Privacy Policy explains how we collect, use, disclose, and protect personal information when you visit our website (grrim.github.io/GrimOrigin) or use our mobile applications, including LUMINIS, VARDEN FILES, and Luna (collectively, the &quot;Services&quot;). We are committed to data minimization and full compliance with the EU General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA/CPRA), the Children&apos;s Online Privacy Protection Act (COPPA), and the Google Play User Data Policy.
       </p>
 
       <LegalSection title="1. Data Controller">
@@ -95,7 +95,7 @@ function PrivacyContent() {
 
       <LegalSection title="2. Information We Collect">
         <p style={{ margin: '0 0 8px' }}><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Website.</strong> Our website does not use analytics, advertising trackers, or third-party cookies. Standard server logs maintained by GitHub Pages (our hosting provider) may temporarily record IP address, user agent, and timestamps for security and abuse prevention; we do not access or retain these logs.</p>
-        <p style={{ margin: '0 0 8px' }}><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Apps.</strong> Our apps are privacy-first. Personal data such as preferences, progress, health entries (Luna), and screen-time logs (OFFLINE) is stored locally on your device by default. We collect:</p>
+        <p style={{ margin: '0 0 8px' }}><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Apps.</strong> Our apps are privacy-first. Personal data such as preferences, progress, game progress (LUMINIS, VARDEN FILES) and health entries (Luna) is stored locally on your device by default. We collect:</p>
         <ul style={{ margin: '0 0 8px', paddingLeft: '20px' }}>
           <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Account data</strong> (only if you create one): email address, hashed password, display name.</li>
           <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Crash and diagnostic data</strong>: anonymized crash reports, device model, OS version, app version. Used to fix bugs.</li>
@@ -148,7 +148,7 @@ function PrivacyContent() {
       </LegalSection>
 
       <LegalSection title="12. Permissions Used by Our Apps">
-        Our apps may request the following Android/iOS permissions, only when needed for a feature you use: <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Notifications</strong> (reminders, in Luna and OFFLINE); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Storage</strong> (export/import of your data); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Internet</strong> (sync and updates); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Vibration</strong> (haptic feedback in LUMINIS); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Usage Stats</strong> (OFFLINE — only if you enable digital-detox tracking, with prominent in-app disclosure).
+        Our apps may request the following Android/iOS permissions, only when needed for a feature you use: <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Notifications</strong> (reminders in Luna, story notifications in VARDEN FILES); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Storage</strong> (export/import of your data); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Internet</strong> (sync and updates); <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Vibration</strong> (haptic feedback in LUMINIS).
       </LegalSection>
 
       <LegalSection title="13. Changes to This Policy">
@@ -166,7 +166,7 @@ function TermsContent() {
   return (
     <div>
       <p style={{ fontSize: '14px', lineHeight: 1.7, color: TOKENS.textMute, marginTop: 0 }}>
-        These Terms of Service (&quot;Terms&quot;) are a legally binding agreement between you and Grim Origin (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;), a sole-proprietor indie studio based in Poland. They govern your access to and use of our website (grrim.github.io/GrimOrigin) and our mobile applications, including LUMINIS, Luna, and OFFLINE (collectively, the &quot;Services&quot;). By accessing or using the Services, you agree to be bound by these Terms. If you do not agree, do not use the Services.
+        These Terms of Service (&quot;Terms&quot;) are a legally binding agreement between you and Grim Origin (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;), a sole-proprietor indie studio based in Poland. They govern your access to and use of our website (grrim.github.io/GrimOrigin) and our mobile applications, including LUMINIS, VARDEN FILES, and Luna (collectively, the &quot;Services&quot;). By accessing or using the Services, you agree to be bound by these Terms. If you do not agree, do not use the Services.
       </p>
 
       <LegalSection title="1. Eligibility">
@@ -194,7 +194,7 @@ function TermsContent() {
       </LegalSection>
 
       <LegalSection title="7. Intellectual Property">
-        All rights, title, and interest in the Services, including software, design, source code, graphics, audio, trademarks, logos, and the names &quot;Grim Origin&quot;, &quot;LUMINIS&quot;, &quot;Luna&quot;, and &quot;OFFLINE&quot;, are owned by Grim Origin or its licensors and are protected by intellectual-property laws. These Terms grant you no rights other than the limited license in Section 2. All other rights are reserved.
+        All rights, title, and interest in the Services, including software, design, source code, graphics, audio, trademarks, logos, and the names &quot;Grim Origin&quot;, &quot;LUMINIS&quot;, &quot;VARDEN FILES&quot;, and &quot;Luna&quot;, are owned by Grim Origin or its licensors and are protected by intellectual-property laws. These Terms grant you no rights other than the limited license in Section 2. All other rights are reserved.
       </LegalSection>
 
       <LegalSection title="8. Third-Party Services">

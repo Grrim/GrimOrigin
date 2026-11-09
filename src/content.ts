@@ -43,7 +43,7 @@ export type Project = {
 };
 
 // Text below mirrors the Google Play store listings (Play Console, Nov 2026).
-// All three released titles are currently in closed testing on Google Play.
+// All three titles are currently in closed testing on Google Play.
 
 const shots = (id: string, n = 4) => Array.from({ length: n }, (_, i) => `apps/${id}/shot-${i + 1}.webp`);
 
@@ -127,26 +127,6 @@ export const APPS: App[] = [
         { title: 'Honest confidence score', body: 'Luna tells you how much each prediction relies on your own history versus general norms, and turns off fertile-window estimates for hormonal methods that suppress ovulation.' },
         { title: 'Calm by design', body: 'Soft-minimalist design with a cycle ring, a biorhythm wave in insights and 200+ rotating wellness tips. Zero ads, zero subscriptions, zero notification spam.' },
         { title: 'Important', body: 'Luna is for cycle self-observation and wellness education only. It is not a medical device, does not diagnose, and must not be used as contraception.' },
-      ],
-    },
-  },
-  {
-    id: 'offline',
-    title: 'OFFLINE',
-    kind: 'App',
-    tagline: 'Digital detox companion',
-    description: 'Track screen-free time, set goals, and build healthier habits — one quiet hour at a time.',
-    status: 'In Development',
-    tags: ['Wellness', 'Habits', 'Minimalist'],
-    accent: '#F5B85B',
-    details: {
-      eyebrow: 'OFFLINE · Overview',
-      heading: 'Planned features',
-      itemLabel: 'Feature',
-      items: [
-        { title: 'Screen-free sessions', body: 'Start a session, put the phone down, and let the time add up.' },
-        { title: 'Goals & streaks', body: 'Set daily targets and build streaks that reward consistency, not perfection.' },
-        { title: 'Gentle insights', body: 'See when you reach for your phone most — without guilt or nagging.' },
       ],
     },
   },

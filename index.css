@@ -441,6 +441,48 @@ html.lenis, html.lenis body { height: auto; }
   .phone-back { display: none; }
 }
 
+/* Store screenshot gallery */
+.gallery { position: relative; display: grid; place-items: center; width: clamp(190px, 17vw, 250px); margin: 0 auto; }
+.gallery .shot {
+  grid-area: 1 / 1;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: transform 700ms var(--ease-out), opacity 700ms var(--ease-out), filter 700ms var(--ease-out);
+  will-change: transform;
+}
+.gallery .shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(236,230,216,0.12);
+}
+.gallery .shot[data-pos='active'] { z-index: 3; cursor: default; transform: none; }
+.gallery .shot[data-pos='next'] { z-index: 2; opacity: 0.5; filter: saturate(0.7); transform: translateX(46%) rotate(6deg) scale(0.8); }
+.gallery .shot[data-pos='prev'] { z-index: 2; opacity: 0.5; filter: saturate(0.7); transform: translateX(-46%) rotate(-6deg) scale(0.8); }
+.gallery .shot[data-pos='hidden'] { z-index: 1; opacity: 0; pointer-events: none; transform: scale(0.7); }
+.gallery .shot[data-pos='next']:hover, .gallery .shot[data-pos='prev']:hover,
+.gallery .shot[data-pos='next']:focus-visible, .gallery .shot[data-pos='prev']:focus-visible { opacity: 0.85; filter: none; }
+.gallery .shot:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 4px; }
+.gallery-dots { display: flex; gap: 8px; margin-top: 28px; }
+.gallery-dots button {
+  width: 22px; height: 4px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(236,230,216,0.18);
+  transition: background 300ms, width 300ms;
+}
+.gallery-dots button[aria-pressed='true'] { width: 40px; background: var(--app-accent); }
+.gallery-dots button:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 3px; }
+@media (max-width: 639px) {
+  .gallery { width: min(200px, 52vw); }
+  .gallery .shot[data-pos='next'] { transform: translateX(34%) rotate(5deg) scale(0.8); }
+  .gallery .shot[data-pos='prev'] { transform: translateX(-34%) rotate(-5deg) scale(0.8); }
+}
+@media (prefers-reduced-motion: reduce) { .gallery .shot, .gallery-dots button { transition: none; } }
+
 /* ─── Labs ────────────────────────────────────────────────────────────────── */
 .lab-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--bone); }
 .lab-row {

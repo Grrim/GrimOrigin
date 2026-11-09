@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { TYPE, withAlpha } from '../tokens';
 import { asset, type App } from '../content';
 
@@ -69,8 +69,14 @@ function Entry({ app, index, onOpen }: { app: App; index: number; onOpen: () => 
         <figure className="entry-visual">
           <span aria-hidden className="corner corner-tl" />
           <span aria-hidden className="corner corner-br" />
-          <PhoneStack app={app} />
-          <figcaption>Fig. {index + 1} — {app.title}{app.screenshots?.length ? '' : ', placeholder screens'}</figcaption>
+          {app.screenshots?.length ? (
+            <ScreenGallery app={app} index={index} />
+          ) : (
+            <>
+              <PhoneStack app={app} />
+              <figcaption>Fig. {index + 1} — {app.title}, placeholder screens</figcaption>
+            </>
+          )}
         </figure>
       </div>
     </article>
@@ -111,6 +117,52 @@ export function AppIcon({ app, size }: { app: App; size: number }) {
     <span aria-hidden style={{ ...style, ...TYPE.display, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: `linear-gradient(145deg, ${app.accent} 0%, ${withAlpha(app.accent, 0.35)} 100%)`, color: '#0C0B09', fontWeight: 800, fontSize: size * 0.5, lineHeight: 1 }}>
       {app.title.charAt(0)}
     </span>
+  );
+}
+
+/** Store screenshots shown whole (they carry their own frame and headline), fanned out. */
+function ScreenGallery({ app, index }: { app: App; index: number }) {
+  const shots = app.screenshots ?? [];
+  const n = shots.length;
+  const [active, setActive] = useState(0);
+  const go = (i: number) => setActive((i + n) % n);
+  const posOf = (i: number) => {
+    if (i === active) return 'active';
+    if (n > 1 && i === (active + 1) % n) return 'next';
+    if (n > 2 && i === (active - 1 + n) % n) return 'prev';
+    return 'hidden';
+  };
+
+  return (
+    <>
+      <div className="gallery" onKeyDown={(e) => { if (e.key === 'ArrowRight') go(active + 1); if (e.key === 'ArrowLeft') go(active - 1); }}>
+        {shots.map((src, i) => {
+          const pos = posOf(i);
+          return (
+            <button
+              key={src}
+              type="button"
+              className="shot"
+              data-pos={pos}
+              tabIndex={pos === 'prev' || pos === 'next' ? 0 : -1}
+              aria-hidden={pos === 'hidden' || undefined}
+              aria-label={pos === 'active' ? undefined : `Show screenshot ${i + 1}`}
+              onClick={() => pos !== 'active' && go(i)}
+            >
+              <img src={asset(src)} alt={pos === 'active' ? `${app.title} — screenshot ${i + 1} of ${n}` : ''} loading="lazy" decoding="async" />
+            </button>
+          );
+        })}
+      </div>
+      {n > 1 && (
+        <div className="gallery-dots" role="group" aria-label={`${app.title} screenshots`}>
+          {shots.map((src, i) => (
+            <button key={src} type="button" aria-label={`Screenshot ${i + 1}`} aria-pressed={i === active} onClick={() => go(i)} />
+          ))}
+        </div>
+      )}
+      <figcaption>Fig. {index + 1} — {app.title} · screen {active + 1} / {n}</figcaption>
+    </>
   );
 }
 

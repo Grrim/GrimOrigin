@@ -93,7 +93,7 @@ function GridLines() {
 
 function Hero() {
   const time = useLocalTime();
-  const building = APPS.find((a) => a.status === 'In Development') ?? APPS[0];
+  const building = APPS[0];
   return (
     <section id="hero" className="hero">
       <div className="container">
@@ -116,7 +116,7 @@ function Hero() {
 
         <div className="cover-foot hero-word" style={{ ['--word-delay' as never]: '480ms' }}>
           <p className="cover-lede">
-            Small games and tools about <em>how things begin</em> — stars, secrets, cycles and habits. Designed and built by one person in Poland.
+            Small games and tools about <em>how things begin</em> — stars, secrets and cycles. Designed and built by one person in Poland.
           </p>
           <div className="cover-actions">
             <button type="button" onClick={() => smoothScrollTo('work')} className="btn btn-primary">
@@ -128,7 +128,7 @@ function Hero() {
           </div>
           <button type="button" className="now-building" onClick={() => smoothScrollTo('work')}>
             <span aria-hidden className="status-dot is-live" />
-            <span className="now-label">Now building</span>
+            <span className="now-label">{building.status === 'Closed Testing' ? 'Now in closed testing' : 'Now building'}</span>
             <span className="now-title">{building.title}</span>
           </button>
         </div>
