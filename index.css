@@ -244,21 +244,40 @@ html.lenis, html.lenis body { height: auto; }
 .cover-strip dd { margin: 0; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--bone); }
 
 .cover { position: relative; display: grid; align-items: center; margin-top: clamp(24px, 3vw, 40px); }
-@media (min-width: 1024px) { .cover { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+@media (min-width: 1024px) {
+  .cover {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+}
 .wordmark {
   position: relative;
   z-index: 2;
   margin: 0;
   font-family: var(--font-display);
   font-stretch: 62%;
+  font-variation-settings: 'wdth' 62;
   font-weight: 800;
-  font-size: clamp(112px, 19vw, 320px);
+  font-size: clamp(56px, 18vw, 130px);
   line-height: 0.8;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--bone);
+  min-width: 0;
 }
-.hero-line { display: block; overflow: hidden; padding-top: 0.04em; }
+@media (min-width: 1024px) {
+  .wordmark {
+    font-size: clamp(120px, 13vw, 210px);
+  }
+}
+.hero-line {
+  display: block;
+  overflow-y: clip;
+  overflow-x: visible;
+  padding-top: 0.04em;
+  padding-right: 0.08em;
+  white-space: nowrap;
+}
 .cover-chart { position: relative; width: 100%; max-width: 500px; justify-self: end; }
 @media (max-width: 1023px) { .cover-chart { justify-self: center; max-width: 440px; margin-top: 24px; } }
 
