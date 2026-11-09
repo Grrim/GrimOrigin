@@ -135,7 +135,7 @@ function ScreenGallery({ app, index }: { app: App; index: number }) {
 
   return (
     <>
-      <div className="gallery" onKeyDown={(e) => { if (e.key === 'ArrowRight') go(active + 1); if (e.key === 'ArrowLeft') go(active - 1); }}>
+      <div className={`gallery${app.deviceFrame ? ' is-framed' : ''}`} onKeyDown={(e) => { if (e.key === 'ArrowRight') go(active + 1); if (e.key === 'ArrowLeft') go(active - 1); }}>
         {shots.map((src, i) => {
           const pos = posOf(i);
           return (
@@ -149,11 +149,14 @@ function ScreenGallery({ app, index }: { app: App; index: number }) {
               aria-label={pos === 'active' ? undefined : `Show screenshot ${i + 1}`}
               onClick={() => pos !== 'active' && go(i)}
             >
-              <img src={asset(src)} alt={pos === 'active' ? `${app.title} — screenshot ${i + 1} of ${n}` : ''} loading="lazy" decoding="async" />
+              <span className="shot-screen">
+                <img src={asset(src)} alt={pos === 'active' ? `${app.title} — ${app.screenCaptions?.[i] ?? `screenshot ${i + 1} of ${n}`}` : ''} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" />
+              </span>
             </button>
           );
         })}
       </div>
+      {app.screenCaptions?.[active] && <p className="gallery-caption" aria-live="polite">{app.screenCaptions[active]}</p>}
       {n > 1 && (
         <div className="gallery-dots" role="group" aria-label={`${app.title} screenshots`}>
           {shots.map((src, i) => (

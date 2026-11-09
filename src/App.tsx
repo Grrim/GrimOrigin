@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { APPS, PROJECTS, asset } from './content';
+import { APPS, asset } from './content';
 import { FloatingNav, type NavSection } from './components/FloatingNav';
 import { AppShowcase } from './components/AppShowcase';
 import { AppDrawer } from './components/AppDrawer';
@@ -12,7 +12,6 @@ const EMAIL = 'grimssys@gmail.com';
 
 const SECTIONS: NavSection[] = [
   { id: 'work', label: 'Work' },
-  { id: 'labs', label: 'Labs' },
   { id: 'studio', label: 'Studio' },
   { id: 'contact', label: 'Contact' },
 ];
@@ -69,7 +68,6 @@ export default function App() {
         <Hero />
         <Marquee />
         <Work onOpen={openApp} />
-        <Labs />
         <Studio />
         <Contact />
       </main>
@@ -193,41 +191,6 @@ function Work({ onOpen }: { onOpen: (id: string) => void }) {
   );
 }
 
-function Labs() {
-  return (
-    <Section id="labs">
-      <SectionHead
-        index={2}
-        label="Labs"
-        aside="Beyond apps"
-        title={<>Side projects <em>that feed the work</em></>}
-        intro="Research, storytelling and simulations — the experiments where ideas for the next title come from."
-      />
-      <ul className="lab-list reveal">
-        {PROJECTS.map((p, i) => {
-          const body = (
-            <>
-              <span className="lab-index">L—{pad2(i + 1)}</span>
-              <span className="lab-title">{p.title}</span>
-              <span className="lab-desc">{p.description}</span>
-              <span className="lab-meta">
-                <span>{p.category}</span>
-                <span className="lab-tags">{p.tags.join(' · ')}</span>
-              </span>
-              <span className="lab-cta">{p.href ? <>{p.linkLabel ?? 'Open'} <span aria-hidden>{'↗︎'}</span></> : 'Link soon'}</span>
-            </>
-          );
-          return (
-            <li key={p.title}>
-              {p.href ? <a className="lab-row" href={p.href} target="_blank" rel="noopener">{body}</a> : <div className="lab-row">{body}</div>}
-            </li>
-          );
-        })}
-      </ul>
-    </Section>
-  );
-}
-
 const ARTICLES = [
   { title: 'Craft over speed', body: 'Every title gets the time it needs. Releases are not rushed — they are refined until they feel right.' },
   { title: 'Respect the user', body: 'No ad spam, no dark patterns, no pay-to-win. Software that respects attention and privacy.' },
@@ -243,7 +206,7 @@ function Studio() {
   ];
   return (
     <Section id="studio">
-      <SectionHead index={3} label="Studio" aside="Charter" title={<>One person, <em>studio standards</em></>} />
+      <SectionHead index={2} label="Studio" aside="Charter" title={<>One person, <em>studio standards</em></>} />
       <div className="studio-grid">
         <div className="reveal">
           <p className="studio-statement">
@@ -293,7 +256,7 @@ function Contact() {
   ];
   return (
     <Section id="contact" className="contact">
-      <SectionHead index={4} label="Correspondence" aside="Replies within 24 h" title={<>Open a file <em>with the studio</em></>} />
+      <SectionHead index={3} label="Correspondence" aside="Replies within 24 h" title={<>Open a file <em>with the studio</em></>} />
       <div className="email-row reveal">
         <a href={`mailto:${EMAIL}`} className="email-link">{EMAIL}<svg aria-hidden className="email-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 12 12 4M5 4h7v7" /></svg></a>
         <button type="button" onClick={copy} className="btn btn-ghost btn-sm" aria-live="polite">{copied ? '✓ Copied' : 'Copy address'}</button>

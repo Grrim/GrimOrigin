@@ -28,19 +28,15 @@ export type App = {
   icon?: string;
   /** Portrait screenshots, ~9:19.5. Falls back to a themed placeholder screen. */
   screenshots?: string[];
+  /** One short label per screenshot, shown under the gallery. */
+  screenCaptions?: string[];
+  /** Wrap raw UI captures in a phone frame (store art that has its own frame does not need it). */
+  deviceFrame?: boolean;
   links?: { googlePlay?: string; appStore?: string };
   privacyHref?: string;
   details: { eyebrow: string; heading: string; itemLabel: string; items: DetailItem[] };
 };
 
-export type Project = {
-  title: string;
-  category: string;
-  description: string;
-  tags: string[];
-  href?: string;
-  linkLabel?: string;
-};
 
 // Text below mirrors the Google Play store listings (Play Console, Nov 2026).
 // All three titles are currently in closed testing on Google Play.
@@ -58,7 +54,8 @@ export const APPS: App[] = [
     tags: ['Puzzle', 'Physics', 'Relaxing'],
     accent: '#6C7BFF',
     icon: 'apps/luminis/icon.webp',
-    screenshots: shots('luminis'),
+    screenshots: shots('luminis', 6),
+    screenCaptions: ['Draw light, guide the stars', 'Title screen', 'Resonance combos', 'Cosmic forces', '12 zodiac constellations', 'Meet Ognik'],
     privacyHref: 'luminis/privacy-policy.html',
     details: {
       eyebrow: 'LUMINIS · Store listing',
@@ -86,7 +83,9 @@ export const APPS: App[] = [
     tags: ['Investigation', 'Thriller', 'Narrative'],
     accent: '#39C5BB',
     icon: 'apps/varden-files/icon.webp',
-    screenshots: shots('varden-files'),
+    screenshots: shots('varden-files', 5),
+    screenCaptions: ['Lock screen', 'Messages from Unknown', 'Photo library', 'Crack the PIN', 'Evidence locker'],
+    deviceFrame: true,
     privacyHref: 'varden-files/privacy-policy.html',
     details: {
       eyebrow: 'VARDEN FILES · Evidence locker',
@@ -114,6 +113,8 @@ export const APPS: App[] = [
     accent: '#F28AB2',
     icon: 'apps/luna/icon.webp',
     screenshots: shots('luna'),
+    screenCaptions: ['Today · cycle ring', 'Calendar & predictions', 'Daily log', 'Trends'],
+    deviceFrame: true,
     privacyHref: 'luna/privacy-policy.html',
     details: {
       eyebrow: 'Luna · Overview',
@@ -132,21 +133,5 @@ export const APPS: App[] = [
   },
 ];
 
-export const PROJECTS: Project[] = [
-  {
-    title: 'Grim History',
-    category: 'Media Channel',
-    description: 'Exploring historical anomalies, medieval mysteries, and dark history through engaging short-form video content.',
-    tags: ['YouTube', 'Storytelling', 'Research'],
-    // TODO: add the channel URL, e.g. href: 'https://www.youtube.com/@…', linkLabel: 'Watch on YouTube'
-  },
-  {
-    title: 'Astrophysics Simulations',
-    category: 'Interactive Lab',
-    description: 'Web-based 2D/3D interactive simulations focusing on stellar dynamics, thermodynamics, and black hole behaviors.',
-    tags: ['TypeScript', 'WebGL', 'Physics'],
-    // TODO: add a demo URL, e.g. href: 'https://…', linkLabel: 'Open the lab'
-  },
-];
 
 export const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
