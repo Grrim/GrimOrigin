@@ -53,7 +53,7 @@ export function Varden() {
           <div className="world-visual-space" aria-hidden />
           <div className="world-copy">
             <p className="varden-kicker" data-reveal><span aria-hidden className="rec" />Found phone thriller</p>
-            <h2 id="varden-title" className="varden-title" data-split>Varden<br />Files</h2>
+            <h2 id="varden-title" className="varden-title" data-split>Varden Files</h2>
             <p className="varden-tag" data-reveal>{VARDEN.tagline}</p>
             <p className="world-hook" data-reveal>{VARDEN.hook}</p>
             <p className="world-pitch" data-reveal>{VARDEN.pitch}</p>
@@ -79,15 +79,13 @@ export function Varden() {
           </header>
           <ol className="cases">
             {VARDEN.cases.map((c) => (
-              <li key={c.no} className={`case ${c.open ? 'is-open' : 'is-sealed'}`} data-reveal>
+              <li key={c.no} className="case is-open" data-reveal>
                 <div className="case-top">
                   <span className="case-no">Case {c.no}</span>
-                  <span className="case-state">{c.open ? 'On the shelf' : 'Sealed'}</span>
+                  <span className="case-state">On the shelf</span>
                 </div>
                 <h4>{c.title}</h4>
                 <p>{c.line}</p>
-                {c.seal && <p className="case-ida">Ida: {c.seal}</p>}
-                {!c.open && <span className="case-seal" aria-hidden>Evidence · do not open</span>}
               </li>
             ))}
           </ol>

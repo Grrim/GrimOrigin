@@ -48,7 +48,10 @@ there is no smooth scroll, no reveal animation and the field renders static fram
     `docs/media/luminis-2.4-gameplay.mp4` as the looping video.
   - VARDEN FILES 2.0: `flutter build web` of the newest branch, played in headless Edge
     at 390×844 (2.5×), plus `SCREENSHOTS=1 SCREENSHOT_LOCALE=en flutter test
-    test/visual/screenshot_harness_test.dart` for the Varden Board.
+    test/visual/screenshot_harness_test.dart` for the Varden Board. Shot 2 (all six
+    cases open) is the locker from that harness with three cases' endings seeded in the
+    save, scrolled past Ida's note; the empty "Sealed" header the game leaves under
+    the list was painted out.
   - Luna 4.0: debug build on an Android 16 emulator (1080×2400), English, sample history
     from Settings → Test mode. Screenshots are blocked by default (FLAG_SECURE), so the
     capture build sets `HIDE_IN_RECENTS_DEFAULT` to false locally — never commit that.

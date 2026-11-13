@@ -14,9 +14,37 @@ export function ChapterRule({ world }: { world: World }) {
   );
 }
 
-/** Horizontal, draggable rail of screenshots. Native scroll underneath, so touch and keyboard just work. */
+/**
+ * Centred, draggable rail of screenshots. It opens on the middle shot, snaps
+ * each shot to the centre of the page and fades out at both edges. Native
+ * scroll underneath, so touch and keyboard just work.
+ */
 export function ShotRail({ world, label, video }: { world: World; label: string; video?: { src: string; poster: string; caption: string } }) {
   const ref = useRef<HTMLDivElement>(null);
+
+  // Start on the middle shot so the rail sits symmetrically under the page.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const centre = () => {
+      const mid = el.children[Math.floor(el.children.length / 2)] as HTMLElement | undefined;
+      if (mid) el.scrollLeft = mid.offsetLeft + mid.offsetWidth / 2 - el.clientWidth / 2;
+    };
+    centre();
+    let lastW = window.innerWidth;
+    const onResize = () => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; centre(); } };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const step = (dir: 1 | -1) => {
+    const el = ref.current;
+    const first = el?.children[0] as HTMLElement | undefined;
+    if (!el || !first) return;
+    const gap = parseFloat(getComputedStyle(el).columnGap) || 0;
+    el.scrollBy({ left: dir * (first.offsetWidth + gap), behavior: reducedMotion() ? 'auto' : 'smooth' });
+  };
+
   useEffect(() => {
     const el = ref.current;
     if (!el || !finePointer()) return;
@@ -58,6 +86,10 @@ export function ShotRail({ world, label, video }: { world: World; label: string;
             </figure>
           );
         })}
+      </div>
+      <div className="rail-nav">
+        <button type="button" className="rail-btn" onClick={() => step(-1)} aria-label="Previous screenshot"><Arrow dir="left" /></button>
+        <button type="button" className="rail-btn" onClick={() => step(1)} aria-label="Next screenshot"><Arrow dir="right" /></button>
       </div>
     </div>
   );
@@ -137,50 +169,39 @@ export function FeatureList({ items, className = '' }: { items: { title: string;
   );
 }
 
-/** Desktop-only cursor: a dot plus a ring that grows and labels itself over interactive things. */
+/**
+ * Desktop-only hover label ("Drag", "Open", "Write") next to the system cursor.
+ * The pointer itself stays the native, hardware-drawn cursor, so it never lags
+ * behind the mouse however busy the page is; the label is moved straight from
+ * the pointer event, with no easing loop.
+ */
 export function Cursor() {
-  const dot = useRef<HTMLDivElement>(null);
-  const ring = useRef<HTMLDivElement>(null);
-  const [label, setLabel] = useState('');
-  const [enabled] = useState(() => typeof window !== 'undefined' && finePointer() && !reducedMotion());
+  const tag = useRef<HTMLDivElement>(null);
+  const [enabled] = useState(() => typeof window !== 'undefined' && finePointer());
 
   useEffect(() => {
-    if (!enabled) return;
-    document.documentElement.classList.add('has-cursor');
-    const pos = { x: -100, y: -100, rx: -100, ry: -100 };
-    let raf = 0;
+    const el = tag.current;
+    if (!enabled || !el) return;
+    let current = '';
     const onMove = (e: PointerEvent) => {
-      pos.x = e.clientX; pos.y = e.clientY;
-      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('a, button, [data-cursor], [role="button"]');
-      ring.current?.classList.toggle('is-active', !!target);
-      setLabel(target?.dataset.cursor ?? '');
+      el.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      const label = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-cursor]')?.dataset.cursor ?? '';
+      if (label === current) return;
+      current = label;
+      if (label) el.textContent = label;
+      el.classList.toggle('is-on', !!label);
     };
-    const onLeave = () => { pos.x = -100; pos.y = -100; };
-    const loop = () => {
-      pos.rx += (pos.x - pos.rx) * 0.18;
-      pos.ry += (pos.y - pos.ry) * 0.18;
-      if (dot.current) dot.current.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
-      if (ring.current) ring.current.style.transform = `translate3d(${pos.rx}px, ${pos.ry}px, 0)`;
-      raf = requestAnimationFrame(loop);
-    };
+    const onLeave = () => { current = ''; el.classList.remove('is-on'); };
     window.addEventListener('pointermove', onMove, { passive: true });
     document.addEventListener('pointerleave', onLeave);
-    raf = requestAnimationFrame(loop);
     return () => {
-      cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerleave', onLeave);
-      document.documentElement.classList.remove('has-cursor');
     };
   }, [enabled]);
 
   if (!enabled) return null;
-  return (
-    <>
-      <div ref={ring} className={`cursor-ring ${label ? 'has-label' : ''}`} aria-hidden><span>{label}</span></div>
-      <div ref={dot} className="cursor-dot" aria-hidden />
-    </>
-  );
+  return <div ref={tag} className="cursor-tag" aria-hidden />;
 }
 
 export function Eyebrow({ children }: { children: ReactNode }) {

@@ -160,19 +160,17 @@ html[data-world='origin'] .world-index, html[data-world='outro'] .world-index { 
 @media (max-width: 1559px) { .world-index { display: none; } }
 
 /* ─── Cursor ──────────────────────────────────────────────────────────────── */
-html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [data-cursor] { cursor: none; }
-.cursor-dot, .cursor-ring { position: fixed; left: 0; top: 0; z-index: 150; pointer-events: none; }
-.cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--accent); transition: background-color var(--tint); }
-.cursor-ring {
-  width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--text) 45%, transparent);
-  display: grid; place-items: center;
+/* The system cursor stays; this is only a label that rides beside it. */
+.rail { cursor: grab; }
+.rail.is-grabbing { cursor: grabbing; }
+.cursor-tag {
+  position: fixed; left: 0; top: 0; z-index: 150; pointer-events: none; will-change: transform;
+  margin: 18px 0 0 16px; padding: 7px 12px 6px; border-radius: 999px; background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+  opacity: 0; scale: 0.6; transform-origin: 0 0; transition: opacity 160ms, scale 220ms var(--ease-out), background-color var(--tint);
 }
-.cursor-ring > span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink); opacity: 0; transition: opacity 200ms; }
-.cursor-ring::before { content: ''; position: absolute; inset: -1px; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform 450ms var(--ease-out); }
-.cursor-ring.is-active::before { transform: scale(0.35); opacity: 0.4; }
-.cursor-ring.has-label::before { transform: scale(1.9); opacity: 1; }
-.cursor-ring.has-label > span { opacity: 1; position: relative; }
-@media (hover: none) { .cursor-dot, .cursor-ring { display: none; } }
+.cursor-tag.is-on { opacity: 1; scale: 1; }
+@media (hover: none) { .cursor-tag { display: none; } }
 
 /* ─── Hero · featured slider ──────────────────────────────────────────────── */
 .hero { position: relative; height: 100svh; min-height: 640px; overflow: hidden; }
@@ -298,7 +296,6 @@ html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [dat
 .press-icons span { display: flex; flex-direction: column; font-family: var(--font-display); font-stretch: 85%; font-weight: 700; font-size: 14px; }
 .press-icons small { font-family: var(--font-mono); font-weight: 400; font-size: 10px; letter-spacing: 0.08em; color: var(--text-dim); }
 
-.case-ida { margin: 10px 0 0 !important; font-style: italic; font-size: 13px !important; color: #E8A94F !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ─── World scaffolding ───────────────────────────────────────────────────── */
@@ -329,17 +326,24 @@ html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [dat
 
 /* Screenshot rail */
 .rail-wrap { position: relative; margin: clamp(64px, 9vh, 120px) 0 clamp(48px, 7vh, 96px); }
+.rail-wrap .rail { -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.rail-nav { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+.rail-btn { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--rule); color: var(--text); display: inline-grid; place-items: center; transition: border-color 200ms, color 200ms, background-color 200ms; }
+.rail-btn:hover { border-color: var(--accent); color: var(--accent); }
+.rail-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (hover: none) { .rail-nav { display: none; } }
 .rail {
   display: flex; gap: clamp(16px, 2vw, 32px); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
-  padding: 20px max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter))) 28px;
-  scroll-padding-inline: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+  position: relative; justify-content: safe center;
+  /* Half the rail minus half a shot each side, so the first and last shots can reach the centre too. */
+  padding: 20px calc(50% - 150px) 28px;
   scrollbar-width: none; user-select: none; -webkit-user-select: none;
 }
 .rail::-webkit-scrollbar { display: none; }
 .rail.is-grabbing { scroll-snap-type: none; }
 .rail { align-items: flex-end; }
 /* Every shot shares one height; width follows its own ratio (--r = height / width). */
-.shot { --shot-h: clamp(400px, 58vh, 600px); flex: none; width: calc((var(--shot-h) - 14px) / var(--r, 2.1667) + 14px); margin: 0; scroll-snap-align: start; }
+.shot { --shot-h: clamp(400px, 58vh, 600px); flex: none; width: calc((var(--shot-h) - 14px) / var(--r, 2.1667) + 14px); margin: 0; scroll-snap-align: center; }
 .shot-media {
   position: relative; aspect-ratio: 1 / var(--r, 2.1667); border-radius: 34px; overflow: hidden; background: #0c0c0e;
   border: 7px solid #121214; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -350,7 +354,7 @@ html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [dat
 .shot-live { position: absolute; left: 12px; top: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; }
 @media (max-width: 767px) { .shot { --shot-h: 440px; } }
 .shot:hover .shot-media { transform: translateY(-8px) rotate(-0.6deg); box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--accent), 0 0 60px -10px var(--glow); }
-.shot figcaption { display: flex; gap: 10px; margin-top: 14px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-mute); }
+.shot figcaption { display: flex; justify-content: center; text-align: center; gap: 10px; margin-top: 14px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-mute); }
 .shot figcaption span { color: var(--accent); }
 
 .world-foot { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; padding: 28px; border: 1px solid var(--rule); border-radius: 24px; background: color-mix(in oklab, var(--bg) 70%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -413,15 +417,8 @@ html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [dat
 .case-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
 .case.is-open .case-state { color: #5FE0D2; }
 .case.is-open .case-state::before { content: '● '; }
-.case.is-sealed .case-state { color: #FF3B4A; }
 .case h4 { font-family: var(--font-display); font-weight: 900; font-stretch: 100%; text-transform: uppercase; font-size: 30px; line-height: 0.95; letter-spacing: -0.01em; margin: auto 0 10px; padding-top: 34px; }
 .case p { margin: 0; font-size: 15px; color: var(--text-mute); line-height: 1.45; }
-.case.is-sealed { background: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.012) 0 10px, rgba(255, 255, 255, 0.03) 10px 20px); }
-.case.is-sealed h4, .case.is-sealed p { filter: blur(0.3px); opacity: 0.72; }
-.case-seal {
-  position: absolute; right: -46px; bottom: 30px; transform: rotate(-32deg); background: #FF3B4A; color: #1A0204;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 48px; font-weight: 600;
-}
 .locker-note { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; color: var(--text-dim); margin-top: 22px; }
 
 /* ─── World III · Lune ────────────────────────────────────────────────────── */
@@ -587,3 +584,17 @@ html.has-cursor, html.has-cursor a, html.has-cursor button, html.has-cursor [dat
 
 .honesty + .stats { margin-top: clamp(48px, 7vh, 96px); }
 .lune-disclaimer { margin-top: 40px; }
+
+/* ─── Game names stay on one line ─────────────────────────────────────────── */
+/* Sized from the width of their own column (cqi), so a name never breaks. */
+.world-copy, .slide-copy, .capsule-body { container-type: inline-size; }
+.luminis-title, .varden-title, .lune-title, .logo, .hero-tab-name { white-space: nowrap; }
+.luminis-title { font-size: min(168px, 19.5cqi); }
+.varden-title { font-stretch: 75%; font-size: min(150px, 16.4cqi); }
+.lune-title { font-size: min(250px, 40cqi); }
+.logo--varden .logo-files { display: inline; margin-left: 0.32em; }
+.logo--xl.logo--luminis { font-size: min(150px, 19cqi); }
+.logo--xl.logo--varden { font-size: min(132px, 10.5cqi); }
+.logo--xl.logo--luna { font-size: min(210px, 36cqi); }
+.logo--md.logo--luminis { font-size: min(48px, 19cqi); }
+.logo--md.logo--varden { font-size: min(42px, 10.5cqi); }
