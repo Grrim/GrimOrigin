@@ -122,7 +122,8 @@ a:hover > .arrow, button:hover > .arrow { transform: translate(2px, -2px); }
 .nav.is-scrolled { padding-top: 12px; padding-bottom: 12px; background: color-mix(in oklab, var(--bg) 66%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); box-shadow: 0 1px 0 var(--rule); }
 .nav-logo { display: inline-flex; align-items: center; gap: 14px; }
 .nav-mark { display: flex; align-items: center; justify-content: center; white-space: nowrap; width: 44px; height: 44px; border-radius: 12px; background: #F4EFE6; color: #0B0A08; font-family: var(--font-display); font-stretch: 75%; font-weight: 900; font-size: 15px; letter-spacing: -0.02em; text-transform: none; }
-.nav-mark .dot { color: var(--accent); }
+/* A real round dot in the world's accent, ringed in ink so it reads on the cream tile in every world. */
+.nav-mark-dot { flex: none; width: 7px; height: 7px; margin: 0 0 0 3px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1.5px #0B0A08; transform: translateY(4px); transition: background-color var(--tint); }
 .nav-name { font-family: var(--font-display); font-stretch: 85%; font-weight: 800; font-size: 17px; letter-spacing: 0.08em; }
 .dot { color: var(--accent); transition: color var(--tint); }
 .nav-links { display: flex; gap: clamp(14px, 2.5vw, 40px); align-items: center; }

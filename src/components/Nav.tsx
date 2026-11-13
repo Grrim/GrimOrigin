@@ -27,7 +27,7 @@ export function Nav() {
       <a href="#games" className="skip-link">Skip to the games</a>
       <header className={`nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
         <button type="button" className="nav-logo" onClick={() => go('top')} aria-label="Grim Origin — back to top">
-          <span aria-hidden className="nav-mark">GO<span className="dot">.</span></span>
+          <span aria-hidden className="nav-mark">GO<span className="nav-mark-dot" /></span>
           <span className="nav-name">Grim Origin</span>
         </button>
         <nav aria-label="Main" className="nav-links">

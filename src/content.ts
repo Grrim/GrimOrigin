@@ -75,7 +75,7 @@ export const WORLDS: Record<WorldId, World> = {
       'Every phone remembers', 'Shelf B · all six cases open', 'Intake protocol', 'Case #01 · 23:52', 'Her lock screen',
       'Varden OS 26', 'Messages from Unknown', 'Photos', 'Greywood Forest, 23:45', 'The Varden Board',
     ]),
-    heroShots: [0, 4, 1],
+    heroShots: [9, 4, 1],
     cardShot: 0,
     privacyHref: 'varden-files/privacy-policy.html',
   },
