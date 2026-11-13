@@ -611,9 +611,16 @@ html[data-world='origin'] .world-index, html[data-world='outro'] .world-index { 
   .stats { margin-bottom: 48px; }
   .stat { padding: 20px 14px 22px 0; }
   .stat + .stat { padding-left: 14px; }
+  .stat:nth-child(3) { padding-left: 0; }
 
-  /* Game cards: a 4:3 crop of the top of the screenshot (logo and title). */
-  .capsule-art { aspect-ratio: 4 / 3; border-radius: 18px; }
+  /* "World II · Game · …" rule: status on its own line, no loose divider. */
+  .chapter-rule { gap: 8px 14px; }
+  .chapter-line { display: none; }
+  .chapter-status { flex-basis: 100%; }
+
+  /* Game cards: a square crop of the top of the screenshot, tall enough to
+     keep each title screen's name whole. */
+  .capsule-art { aspect-ratio: 1 / 1; border-radius: 18px; }
   .capsules { gap: 40px; }
 
   .feature { padding: 20px 0 22px; grid-template-columns: 30px 1fr; column-gap: 8px; }

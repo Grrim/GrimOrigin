@@ -31,6 +31,9 @@ export function useReveals() {
             stagger: { each: 0.022 },
             delay: el.dataset.splitDelay ? Number(el.dataset.splitDelay) : 0,
             scrollTrigger: el.closest('[data-hero]') ? undefined : { trigger: el, start: 'top 88%', once: true },
+            // The line masks are only needed while the letters rise. Left in place they clip
+            // a heading's glow (text-shadow) into a visible rectangle, so put the text back.
+            onComplete: () => split.revert(),
           });
         });
 
