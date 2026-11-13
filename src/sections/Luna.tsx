@@ -96,7 +96,7 @@ export function Luna() {
       <div className="container">
         <ChapterRule world={w} />
 
-        <div className="world-stage">
+        <div className="world-stage" data-vivid>
           <div className="world-copy">
             <h2 id="luna-title" className="lune-title" data-split>Luna</h2>
             <p className="lune-tag" data-reveal>{LUNA.tagline}</p>

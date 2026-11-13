@@ -8,7 +8,7 @@ export function Luminis() {
       <div className="container">
         <ChapterRule world={w} />
 
-        <div className="world-stage">
+        <div className="world-stage" data-vivid>
           <div className="world-copy">
             <h2 id="luminis-title" className="luminis-title" data-split>LUMINIS</h2>
             <p className="luminis-sub" data-reveal>{LUMINIS.subtitle}</p>

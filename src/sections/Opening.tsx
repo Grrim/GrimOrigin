@@ -90,6 +90,7 @@ export function Hero() {
       data-stage={world.stage}
       data-world={world.id}
       data-hero
+      data-vivid
       aria-roledescription="carousel"
       aria-label="Featured games"
       onMouseEnter={() => setPaused(true)}

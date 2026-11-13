@@ -49,7 +49,7 @@ export function Varden() {
       <div className="container">
         <ChapterRule world={w} />
 
-        <div className="world-stage world-stage--flip">
+        <div className="world-stage world-stage--flip" data-vivid>
           <div className="world-visual-space" aria-hidden />
           <div className="world-copy">
             <p className="varden-kicker" data-reveal><span aria-hidden className="rec" />Found phone thriller</p>

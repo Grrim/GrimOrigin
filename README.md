@@ -15,7 +15,7 @@ re-tints itself (`html[data-world]`):
 | 0 | Games, news, studio, press | a nebula expanding from a single point |
 | 1–3 | Hero slider | follows the featured game |
 | 1 | LUMINIS (repo `LUMINIS`) | twelve constellations on a zodiac ring, falling stars, Ognik |
-| 2 | VARDEN FILES (repo `OFFLINE`) | a phone with notifications, in the rain |
+| 2 | VARDEN FILES (repo `OFFLINE`) | the city at night in the rain, six case windows tied by a red thread |
 | 3 | Luna (repo `Lune`) | a crescent inside a four-phase cycle ring |
 | 4 | Contact, footer | everything collapses back into the point |
 

@@ -2,7 +2,7 @@
 // One particle field that morphs between five "states of the studio":
 //   0 origin  – a single point of light expanding into a nebula
 //   1 LUMINIS – twelve constellations on a zodiac ring, falling stars, Ognik
-//   2 VARDEN  – a phone silhouette with notifications, in the rain
+//   2 VARDEN  – the city at night in the rain; six case windows tied by a red thread
 //   3 Lune    – a crescent moon inside a four-phase cycle ring
 //   4 outro   – everything collapses back into the point it came from
 // Every particle owns one position + colour per state; the vertex shader
@@ -123,68 +123,80 @@ function buildStates(n: number) {
     } else {
       // deep field, some of it falling
       set(1, i, (rnd() - 0.5) * 16, (rnd() - 0.5) * 10, -2 - rnd() * 6, rnd() < 0.15 ? constellations[Math.floor(rnd() * 12)].hue : c('#C9D2FF'), 0.25 + rnd() * 0.45);
-      if (rnd() < 0.08) motion[i * 4] = 0.8 + rnd() * 1.6;
+      if (rnd() < 0.05) motion[i * 4] = 0.5 + rnd() * 0.9;
     }
   }
 
-  // ── 2 · VARDEN FILES – phone in the rain ───────────────────────────────────
-  const W = 2.0, H = 4.1, R = 0.32;
-  const perimeter = (t: number): [number, number] => {
-    // rounded rectangle, t in [0,1)
-    const straightW = W - 2 * R, straightH = H - 2 * R;
-    const arc = (Math.PI / 2) * R;
-    const total = 2 * straightW + 2 * straightH + 4 * arc;
-    let d = t * total;
-    const segs: [number, (d: number) => [number, number]][] = [
-      [straightW, (d) => [-W / 2 + R + d, H / 2]],
-      [arc, (d) => { const a = Math.PI / 2 - d / R; return [W / 2 - R + Math.cos(a) * R, H / 2 - R + Math.sin(a) * R]; }],
-      [straightH, (d) => [W / 2, H / 2 - R - d]],
-      [arc, (d) => { const a = -d / R; return [W / 2 - R + Math.cos(a) * R, -H / 2 + R + Math.sin(a) * R]; }],
-      [straightW, (d) => [W / 2 - R - d, -H / 2]],
-      [arc, (d) => { const a = -Math.PI / 2 - d / R; return [-W / 2 + R + Math.cos(a) * R, -H / 2 + R + Math.sin(a) * R]; }],
-      [straightH, (d) => [-W / 2, -H / 2 + R + d]],
-      [arc, (d) => { const a = Math.PI - d / R; return [-W / 2 + R + Math.cos(a) * R, H / 2 - R + Math.sin(a) * R]; }],
-    ];
-    for (const [len, fn] of segs) { if (d <= len) return fn(d); d -= len; }
-    return [-W / 2 + R, H / 2];
-  };
-  const frame = c('#9FF2E8');
-  const rain = c('#6F8FA3');
+  // ── 2 · VARDEN FILES – the city at night, in the rain ──────────────────────
+  // A skyline of lit and dark windows. Six windows burn brighter – one per case –
+  // and a red thread runs between them, like the Varden Board laid over the city.
+  type Building = { x: number; w: number; h: number; z: number };
+  const GROUND = -3.3;
+  const buildings: Building[] = [];
+  for (let x = -8.2; x < 8.2;) {
+    const w = 0.45 + rnd() * 1.05;
+    const centre = 1 - Math.min(1, Math.abs(x + w / 2) / 8); // taller towards the middle
+    const h = 0.9 + rnd() * 1.6 + centre * rnd() * 2.6;
+    buildings.push({ x, w, h, z: -1.2 - rnd() * 1.6 });
+    x += w + 0.04 + rnd() * 0.12;
+  }
+  // Pick six tall-enough buildings spread across the width for the case windows.
+  const caseWindows: [number, number, number][] = [];
+  const pool = buildings.filter((b) => b.h > 1.8 && Math.abs(b.x) < 6.8);
+  for (let k = 0; k < 6; k++) {
+    const b = pool[Math.floor(((k + 0.5) / 6) * pool.length)] ?? buildings[k];
+    caseWindows.push([b.x + b.w * (0.3 + rnd() * 0.4), GROUND + b.h * (0.45 + rnd() * 0.4), b.z + 0.01]);
+  }
+  const outline = c('#5C8494');
+  const winWarm = c('#FFC27A');
+  const winCold = c('#BFE6F0');
   const sodium = c('#FFB25B');
-  const white = c('#EAF6FF');
-  const red = c('#FF3B4A');
+  const thread = c('#FF3B4A');
+  const rain = c('#6F8FA3');
+  const pickBuilding = () => buildings[Math.floor(rnd() * buildings.length)];
   for (let i = 0; i < n; i++) {
     const roll = rand[i * 4 + 1];
-    if (roll < 0.16) {
-      const [x, y] = perimeter(rnd());
-      set(2, i, x + (rnd() - 0.5) * 0.02, y + (rnd() - 0.5) * 0.02, 0, frame, 0.75);
-    } else if (roll < 0.25) {
-      // three notification cards
-      const k = Math.floor(rnd() * 3);
-      const cy = 0.35 - k * 0.62;
-      const edge = rnd() < 0.6;
+    if (roll < 0.22) {
+      // building edges: roofline and walls, faint
+      const b = pickBuilding();
+      const t = rnd();
       let x: number, y: number;
-      if (edge) {
-        const t = rnd();
-        if (t < 0.5) { x = -0.78 + rnd() * 1.56; y = cy + (rnd() < 0.5 ? 0.24 : -0.24); }
-        else { x = rnd() < 0.5 ? -0.78 : 0.78; y = cy - 0.24 + rnd() * 0.48; }
-      } else { x = -0.6 + rnd() * 1.0; y = cy + (rnd() < 0.5 ? 0.06 : -0.08); }
-      set(2, i, x, y, 0.02, white, edge ? 0.45 : 0.3);
-    } else if (roll < 0.31) {
-      // the clock – a bright bar of digits near the top of the screen
-      const x = -0.62 + rnd() * 1.24;
-      const y = 1.3 + (rnd() - 0.5) * 0.36;
-      set(2, i, x, y, 0.02, white, 0.75);
-    } else if (roll < 0.312) {
-      set(2, i, 0.72 + (rnd() - 0.5) * 0.05, 1.85 + (rnd() - 0.5) * 0.05, 0.05, red, 2.2);
-    } else if (roll < 0.36) {
-      // sodium street lamp glow, upper corner
+      if (t < 0.5) { x = b.x + rnd() * b.w; y = GROUND + b.h; }
+      else { x = rnd() < 0.5 ? b.x : b.x + b.w; y = GROUND + rnd() * b.h; }
+      set(2, i, x, y, b.z, outline, 0.75);
+    } else if (roll < 0.52) {
+      // windows on a grid; most are dark, some lit warm or cold
+      const b = pickBuilding();
+      const cols = Math.max(2, Math.floor(b.w / 0.16));
+      const rows = Math.max(3, Math.floor(b.h / 0.2));
+      const cx = Math.floor(rnd() * cols), cy = Math.floor(rnd() * rows);
+      const x = b.x + (cx + 0.5) * (b.w / cols) + (rnd() - 0.5) * 0.03;
+      const y = GROUND + 0.12 + (cy + 0.5) * ((b.h - 0.2) / rows) + (rnd() - 0.5) * 0.03;
+      const lit = rnd();
+      if (lit < 0.3) set(2, i, x, y, b.z + 0.01, rnd() < 0.7 ? winWarm : winCold, 0.7 + rnd() * 0.5);
+      else set(2, i, x, y, b.z + 0.01, outline, 0.3);
+    } else if (roll < 0.56) {
+      // the six case windows, bright and slightly bloomed
+      const [wx, wy, wz] = caseWindows[Math.floor(rnd() * 6)];
+      const a = rnd() * Math.PI * 2, r = Math.pow(rnd(), 2) * 0.12;
+      set(2, i, wx + Math.cos(a) * r, wy + Math.sin(a) * r, wz, sodium, 1.3 - r * 4);
+    } else if (roll < 0.61) {
+      // the red thread between them, sagging a little like string on a board
+      const k = Math.floor(rnd() * 5);
+      const [ax, ay, az] = caseWindows[k];
+      const [bx, by, bz] = caseWindows[k + 1];
+      const t = rnd();
+      const sag = Math.sin(t * Math.PI) * 0.35;
+      set(2, i, ax + (bx - ax) * t, ay + (by - ay) * t - sag, az + (bz - az) * t + 0.02, thread, 0.8);
+    } else if (roll < 0.65) {
+      // two sodium street lamps in the foreground
+      const lamp = rnd() < 0.5 ? -5.2 : 4.6;
       const a = rnd() * Math.PI * 2;
-      const r = Math.pow(rnd(), 2) * 1.6;
-      set(2, i, -4.6 + Math.cos(a) * r, 3.0 + Math.sin(a) * r * 0.7, -3, sodium, 0.35 + (1 - r / 1.6) * 0.5);
+      const r = Math.pow(rnd(), 2.2) * 1.5;
+      set(2, i, lamp + Math.cos(a) * r, -1.2 + Math.sin(a) * r * 0.75, 0.6, sodium, 0.3 + (1 - r / 1.5) * 0.6);
     } else {
-      set(2, i, (rnd() - 0.5) * 16, (rnd() - 0.5) * 10, -0.5 - rnd() * 6, rain, 0.22 + rnd() * 0.3);
-      motion[i * 4 + 1] = 3.5 + rnd() * 3.5;
+      set(2, i, (rnd() - 0.5) * 17, (rnd() - 0.5) * 10, -0.2 - rnd() * 5.5, rain, 0.2 + rnd() * 0.3);
+      motion[i * 4 + 1] = 2.0 + rnd() * 2.2;
     }
   }
 
@@ -270,7 +282,7 @@ const vertex = /* glsl */ `
 
     // LUMINIS: the ring turns gently, some stars fall
     vec3 a1 = p1;
-    a1.xy = rot(a1.xy, uTime * 0.02);
+    a1.xy = rot(a1.xy, uTime * 0.012);
     if (aMotion.x > 0.0) {
       a1.y = 5.0 - mod(5.0 - p1.y + uTime * aMotion.x, 10.0);
       a1.x = p1.x - (5.0 - a1.y) * 0.35;
@@ -306,7 +318,7 @@ const vertex = /* glsl */ `
 
     vColor = c0 * w0 + c1 * w1 + c2 * w2 + c3 * w3 + c4 * w4;
 
-    float twinkle = 0.75 + 0.25 * sin(uTime * (1.5 + aRand.y * 3.0) + aRand.x * 40.0);
+    float twinkle = 0.86 + 0.14 * sin(uTime * (0.8 + aRand.y * 1.6) + aRand.x * 40.0);
     float tw = mix(1.0, twinkle, w1 + w4 * 0.5);
     vAlpha = tw * mix(1.0, k, w0);
     vStretch = (aMotion.y > 0.0 ? w2 : 0.0) + (aMotion.x > 0.0 ? w1 * 0.6 : 0.0);
@@ -400,7 +412,8 @@ export function createCosmos(canvas: HTMLCanvasElement, opts: { reducedMotion: b
     const wide = aspect > 1.05;
     // On wide screens each world sits beside its copy; on phones it is centred behind it.
     const side = Math.min(3.4, 1.15 * aspect + 0.6);
-    uniforms.uShift.value = wide ? [0, side, -side, side, side * 0.95] : [0, 0, 0, 0, 0];
+    // The Varden skyline spans the whole width, so it stays centred.
+    uniforms.uShift.value = wide ? [0, side, 0, side, side * 0.95] : [0, 0, 0, 0, 0];
     uniforms.uScale.value = wide ? 1 : Math.max(0.62, aspect * 1.05);
     uniforms.uSize.value = wide ? 1 : 0.85;
   };
@@ -415,8 +428,8 @@ export function createCosmos(canvas: HTMLCanvasElement, opts: { reducedMotion: b
     uniforms.uTime.value += dt;
     pointer.sx += (pointer.x - pointer.sx) * 0.04;
     pointer.sy += (pointer.y - pointer.sy) * 0.04;
-    points.rotation.y = pointer.sx * 0.22;
-    points.rotation.x = -pointer.sy * 0.14;
+    points.rotation.y = pointer.sx * 0.1;
+    points.rotation.x = -pointer.sy * 0.06;
     uniforms.uMix.value = state.mix;
     uniforms.uIntro.value = state.intro;
     renderer.render(scene, camera);

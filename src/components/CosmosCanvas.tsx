@@ -43,6 +43,20 @@ export function CosmosCanvas() {
     stageEls.forEach((el) => {
       triggers.push(ScrollTrigger.create({ trigger: el, start: 'top 50%', end: 'bottom 50%', onToggle: () => sync() }));
     });
+
+    // Vivid only while a "cover" zone (hero, a game's first screen) holds the middle of the viewport.
+    const vivid = new Set<Element>();
+    document.querySelectorAll('[data-vivid]').forEach((el) => {
+      triggers.push(ScrollTrigger.create({
+        trigger: el,
+        start: 'top 60%',
+        end: 'bottom 40%',
+        onToggle: (self) => {
+          if (self.isActive) vivid.add(el); else vivid.delete(el);
+          canvas.classList.toggle('is-vivid', vivid.size > 0);
+        },
+      }));
+    });
     const onRefresh = () => sync();
     ScrollTrigger.addEventListener('refresh', onRefresh);
     cleanups.push(() => ScrollTrigger.removeEventListener('refresh', onRefresh));
