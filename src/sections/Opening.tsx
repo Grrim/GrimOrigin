@@ -23,7 +23,7 @@ export function PhoneFan({ world, eager = false }: { world: World; eager?: boole
     return (
       <div className={`fan-slot fan-slot--${pos}`} style={{ ['--r' as string]: s.ratio ?? 2.1667 }}>
         <div className={`fan-phone fan-phone--${pos}`}>
-          <img src={asset(s.src)} alt={pos === 'c' ? `${world.title} — ${s.caption}` : ''} loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+          <img src={asset(s.src)} alt={pos === 'c' ? `${world.title}: ${s.caption}` : ''} loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} />
         </div>
       </div>
     );
@@ -120,7 +120,7 @@ export function Hero() {
                 <p className="slide-tagline">{w.tagline}</p>
                 <div className="slide-actions">
                   <button type="button" className="btn btn-solid" onClick={() => scrollToId(id)}>Explore {w.title} <Arrow dir="down" /></button>
-                  <a className="btn btn-line" href={`mailto:${EMAIL}?subject=${encodeURIComponent(`${w.title} — closed test`)}`}>Join the closed test</a>
+                  <a className="btn btn-line" href={`mailto:${EMAIL}?subject=${encodeURIComponent(`${w.title} closed test`)}`}>Join the closed test</a>
                 </div>
               </div>
               <div className="slide-art"><PhoneFan world={w} eager={i === 0} /></div>

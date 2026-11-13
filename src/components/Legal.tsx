@@ -120,9 +120,9 @@ function PrivacyContent() {
       <LegalSection title="6. Sharing and Third-Party Services">
         We do not sell personal data. We share limited data only with service providers acting as processors under our instructions:
         <ul style={{ margin: '8px 0 0', paddingLeft: '20px' }}>
-          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Google Play / Apple App Store</strong> — app distribution, in-app purchases, subscription management.</li>
-          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Crash reporting (e.g., Firebase Crashlytics or Sentry)</strong> — anonymized stack traces and device metadata. No personal content.</li>
-          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Cloud hosting (e.g., Cloudflare, GitHub Pages)</strong> — infrastructure for our website.</li>
+          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Google Play / Apple App Store</strong>: app distribution, in-app purchases, subscription management.</li>
+          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Crash reporting (e.g., Firebase Crashlytics or Sentry)</strong>: anonymized stack traces and device metadata. No personal content.</li>
+          <li><strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>Cloud hosting (e.g., Cloudflare, GitHub Pages)</strong>: infrastructure for our website.</li>
         </ul>
         Each provider has its own privacy policy that governs their handling of data. We do not disclose data to advertisers or data brokers. We may disclose data when required by law, court order, or to protect rights and safety.
       </LegalSection>
@@ -136,7 +136,7 @@ function PrivacyContent() {
       </LegalSection>
 
       <LegalSection title="9. Your Rights">
-        Depending on your jurisdiction, you have the right to: <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>access</strong> your personal data; <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>rectify</strong> inaccurate data; request <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>erasure</strong> (&quot;right to be forgotten&quot;); restrict or object to processing; receive a portable copy of your data; withdraw consent at any time; lodge a complaint with a supervisory authority (in Poland: <em>Prezes UODO</em>, <a href="https://uodo.gov.pl" target="_blank" rel="noopener noreferrer" style={{ color: TOKENS.accent, textDecoration: 'none' }}>uodo.gov.pl</a>). California residents additionally have the right to know, delete, correct, and opt out of sale of personal information under the CCPA/CPRA — we do not sell personal information. To exercise any right, email <a href="mailto:grimssys@gmail.com" style={{ color: TOKENS.accent, textDecoration: 'none' }}>grimssys@gmail.com</a>; we respond within 30 days.
+        Depending on your jurisdiction, you have the right to: <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>access</strong> your personal data; <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>rectify</strong> inaccurate data; request <strong style={{ color: TOKENS.textHigh, fontWeight: 600 }}>erasure</strong> (&quot;right to be forgotten&quot;); restrict or object to processing; receive a portable copy of your data; withdraw consent at any time; lodge a complaint with a supervisory authority (in Poland: <em>Prezes UODO</em>, <a href="https://uodo.gov.pl" target="_blank" rel="noopener noreferrer" style={{ color: TOKENS.accent, textDecoration: 'none' }}>uodo.gov.pl</a>). California residents additionally have the right to know, delete, correct, and opt out of sale of personal information under the CCPA/CPRA. We do not sell personal information. To exercise any right, email <a href="mailto:grimssys@gmail.com" style={{ color: TOKENS.accent, textDecoration: 'none' }}>grimssys@gmail.com</a>; we respond within 30 days.
       </LegalSection>
 
       <LegalSection title="10. Children's Privacy">

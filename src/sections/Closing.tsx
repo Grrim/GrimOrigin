@@ -12,14 +12,14 @@ export function Studio() {
         <p className="manifesto-text" data-scrub-words>
           Every world begins with a single point of light. A sky that forgot its song. A city whose phones
           remember. A calendar that keeps your secrets. We start small and build outward until it holds
-          together — no ads, no dark patterns, no shortcuts.
+          together, without ads, dark patterns or shortcuts.
         </p>
         <div className="studio-head">
           <h2 id="studio-title" className="section-title" data-split>One person.<br />Studio standards.</h2>
           <div className="studio-intro" data-reveal>
             <p>
               Grim Origin is an independent studio from Poland, founded in 2026. Design, code, music synthesis,
-              level tools, store art and privacy policies — all made in-house, by one person.
+              level tools, store art and privacy policies are all made in-house, by one person.
             </p>
             <div className="founder">
               <img src={asset('avatar.webp')} alt="" width={56} height={56} loading="lazy" decoding="async" />
@@ -57,7 +57,7 @@ export function Contact() {
   };
   const topics: [string, string][] = [
     ['Closed tests', 'Want to play LUMINIS or VARDEN FILES, or try Lune, before launch? Ask for an invite.'],
-    ['Publishing & press', 'Publishers, platforms, journalists — include your outlet and deadline.'],
+    ['Publishing & press', 'Publishers, platforms, journalists: include your outlet and deadline.'],
     ['Feedback & support', 'Bugs, ideas or questions about any of the worlds. Every message is read.'],
   ];
   return (

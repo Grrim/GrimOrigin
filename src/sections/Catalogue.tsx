@@ -20,7 +20,7 @@ export function Games() {
             const art = w.shots[w.cardShot];
             return (
               <li key={id} data-reveal>
-                <button type="button" className={`capsule capsule--${id}`} onClick={() => scrollToId(id)} data-cursor="Open" aria-label={`${w.title} — ${w.genre}`}>
+                <button type="button" className={`capsule capsule--${id}`} onClick={() => scrollToId(id)} data-cursor="Open" aria-label={`${w.title}: ${w.genre}`}>
                   <span className="capsule-art">
                     <img src={asset(art.src)} alt="" loading="lazy" decoding="async" />
                     <span className="capsule-chip">{w.kind} · v{w.version}</span>
@@ -62,7 +62,7 @@ export function News() {
             return (
               <li key={n.title} data-reveal>
                 <article className={`news-card news-card--${w.id}`}>
-                  <button type="button" className="news-hit" onClick={() => scrollToId(w.id)} aria-label={`${n.title} — read about ${w.title}`} />
+                  <button type="button" className="news-hit" onClick={() => scrollToId(w.id)} aria-label={`${n.title}. Read about ${w.title}`} />
                   <div className="news-art"><img src={asset(s.src)} alt="" loading="lazy" decoding="async" /></div>
                   <div className="news-text">
                     <p className="news-meta"><time dateTime={n.date}>{fmtDate(n.date)}</time><span>{w.title}</span></p>

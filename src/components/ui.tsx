@@ -119,7 +119,7 @@ export function ShotRail({ world, label, video }: { world: World; label: string;
                 return (
                   <figure key={s.src} className="shot" style={{ ['--r' as string]: ratio }} aria-hidden={clone || undefined} inert={clone || undefined}>
                     <div className="shot-media">
-                      <img src={asset(s.src)} alt={clone ? '' : `${world.title} — ${s.caption}`} loading="lazy" decoding="async" draggable={false} width={720} height={Math.round(720 * ratio)} />
+                      <img src={asset(s.src)} alt={clone ? '' : `${world.title}: ${s.caption}`} loading="lazy" decoding="async" draggable={false} width={720} height={Math.round(720 * ratio)} />
                     </div>
                     <figcaption><span>{String(i + 1 + offset).padStart(2, '0')}</span>{s.caption}</figcaption>
                   </figure>
@@ -162,7 +162,7 @@ function VideoShot({ src, poster, caption, clone = false }: { src: string; poste
 
 /** Icon + status + closed-test request + privacy link. */
 export function WorldFoot({ world, note }: { world: World; note: string }) {
-  const subject = encodeURIComponent(`${world.title} — closed test`);
+  const subject = encodeURIComponent(`${world.title} closed test`);
   const store = world.links?.googlePlay;
   return (
     <div className="world-foot" data-reveal>
