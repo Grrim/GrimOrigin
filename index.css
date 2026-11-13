@@ -598,3 +598,38 @@ html[data-world='origin'] .world-index, html[data-world='outro'] .world-index { 
 .logo--xl.logo--luna { font-size: min(210px, 36cqi); }
 .logo--md.logo--luminis { font-size: min(48px, 19cqi); }
 .logo--md.logo--varden { font-size: min(42px, 10.5cqi); }
+
+/* ─── Phones ──────────────────────────────────────────────────────────────── */
+/* Shorter bands, tighter cards and an opaque bar, so a phone gets the same
+   page in a third less scrolling. Desktop is untouched. */
+@media (max-width: 767px) {
+  .nav.is-scrolled { background: color-mix(in oklab, var(--bg) 90%, transparent); }
+  .world { padding: 64px 0 72px; }
+  /* The constellation still shows above each world, but the name comes sooner. */
+  .world-visual-space { min-height: 22vh; }
+  .world-hook { margin-top: 24px; }
+  .stats { margin-bottom: 48px; }
+  .stat { padding: 20px 14px 22px 0; }
+  .stat + .stat { padding-left: 14px; }
+
+  /* Game cards: a 4:3 crop of the top of the screenshot (logo and title). */
+  .capsule-art { aspect-ratio: 4 / 3; border-radius: 18px; }
+  .capsules { gap: 40px; }
+
+  .feature { padding: 20px 0 22px; grid-template-columns: 30px 1fr; column-gap: 8px; }
+  .feature h4 { font-size: 19px; }
+  .world--luminis .feature h4 { font-size: 17px; }
+  .world--lune .feature h4 { font-size: 20px; }
+  .feature p { font-size: 16px; }
+
+  .varden-grid { gap: 32px; }
+  .lock { max-width: 320px; }
+  .case { padding: 18px 18px 20px; }
+  .case h4 { font-size: 24px; padding-top: 18px; }
+  .honesty-item { padding: 22px; border-radius: 22px; }
+  .honesty-item h4 { font-size: 21px; }
+
+  .rail-wrap { margin: 48px 0 40px; }
+  .manifesto-text { margin-bottom: 56px; }
+  .facts { margin: 48px 0; }
+}

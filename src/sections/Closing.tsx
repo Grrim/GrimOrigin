@@ -56,7 +56,7 @@ export function Contact() {
     catch { window.location.href = `mailto:${EMAIL}`; }
   };
   const topics: [string, string][] = [
-    ['Closed tests', 'Want to play LUMINIS or VARDEN FILES, or try Lune, before launch? Ask for an invite.'],
+    ['Closed tests', 'Want to play LUMINIS or VARDEN FILES, or try Luna, before launch? Ask for an invite.'],
     ['Publishing & press', 'Publishers, platforms, journalists: include your outlet and deadline.'],
     ['Feedback & support', 'Bugs, ideas or questions about any of the worlds. Every message is read.'],
   ];
