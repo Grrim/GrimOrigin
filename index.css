@@ -334,9 +334,8 @@ html[data-world='origin'] .world-index, html[data-world='outro'] .world-index { 
 @media (hover: none) { .rail-nav { display: none; } }
 .rail {
   display: flex; gap: clamp(16px, 2vw, 32px); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
-  position: relative; justify-content: safe center;
-  /* Half the rail minus half a shot each side, so the first and last shots can reach the centre too. */
-  padding: 20px calc(50% - 150px) 28px;
+  /* Endless loop (see ShotRail): no edge padding needed, the copies fill both sides. */
+  position: relative; padding: 20px 0 28px;
   scrollbar-width: none; user-select: none; -webkit-user-select: none;
 }
 .rail::-webkit-scrollbar { display: none; }

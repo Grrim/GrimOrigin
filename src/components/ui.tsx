@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
 import { asset, EMAIL, type World } from '../content';
 import { finePointer, reducedMotion } from '../motion';
 
@@ -14,28 +14,86 @@ export function ChapterRule({ world }: { world: World }) {
   );
 }
 
+/** Copies of the set laid side by side; the middle one is "real", the others let the loop wrap. */
+const RAIL_COPIES = 3;
+
 /**
- * Centred, draggable rail of screenshots. It opens on the middle shot, snaps
- * each shot to the centre of the page and fades out at both edges. Native
- * scroll underneath, so touch and keyboard just work.
+ * Endless, centred, draggable rail of screenshots. The set is rendered three
+ * times; whenever the rail comes to rest outside the middle copy it jumps
+ * back by exactly one set width, which looks identical, so it can be scrolled
+ * forever in either direction. Native scroll underneath, so touch, trackpad
+ * and keyboard just work.
  */
 export function ShotRail({ world, label, video }: { world: World; label: string; video?: { src: string; poster: string; caption: string } }) {
   const ref = useRef<HTMLDivElement>(null);
+  const perSet = world.shots.length + (video ? 1 : 0);
 
-  // Start on the middle shot so the rail sits symmetrically under the page.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const setWidth = () => {
+      const a = el.children[0] as HTMLElement | undefined;
+      const b = el.children[perSet] as HTMLElement | undefined;
+      return a && b ? b.offsetLeft - a.offsetLeft : 0;
+    };
+    /** Keep the scroll position inside the middle copy. */
+    const wrap = () => {
+      const w = setWidth();
+      if (!w) return;
+      if (el.scrollLeft < w * 0.5) el.scrollLeft += w;
+      else if (el.scrollLeft > w * 1.5) el.scrollLeft -= w;
+    };
+    // Open on the middle shot of the middle copy.
     const centre = () => {
-      const mid = el.children[Math.floor(el.children.length / 2)] as HTMLElement | undefined;
+      const mid = el.children[perSet + Math.floor(perSet / 2)] as HTMLElement | undefined;
       if (mid) el.scrollLeft = mid.offsetLeft + mid.offsetWidth / 2 - el.clientWidth / 2;
     };
     centre();
+
+    // Wrap once the rail is at rest, so a smooth scroll or a fling is never cut short.
+    let dragging = false;
+    let idle = 0;
+    const onScroll = () => { window.clearTimeout(idle); idle = window.setTimeout(() => { if (!dragging) wrap(); }, 140); };
+    el.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mouse drag (touch uses native scrolling).
+    let down = false, startX = 0, startLeft = 0, moved = false;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      down = dragging = true; moved = false; startX = e.clientX; startLeft = el.scrollLeft; el.classList.add('is-grabbing');
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      const w = setWidth();
+      let target = startLeft - dx;
+      // Wrap mid-drag too, carrying the drag origin along.
+      if (w && target < w * 0.5) { startLeft += w; target += w; }
+      else if (w && target > w * 1.5) { startLeft -= w; target -= w; }
+      el.scrollLeft = target;
+    };
+    const onUp = () => { if (!down) return; down = dragging = false; el.classList.remove('is-grabbing'); onScroll(); };
+    const onClick = (e: MouseEvent) => { if (moved) { e.preventDefault(); e.stopPropagation(); } };
+    el.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    el.addEventListener('click', onClick, true);
+
     let lastW = window.innerWidth;
     const onResize = () => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; centre(); } };
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
+
+    return () => {
+      window.clearTimeout(idle);
+      el.removeEventListener('scroll', onScroll);
+      el.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      el.removeEventListener('click', onClick, true);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [perSet]);
 
   const step = (dir: 1 | -1) => {
     const el = ref.current;
@@ -45,45 +103,29 @@ export function ShotRail({ world, label, video }: { world: World; label: string;
     el.scrollBy({ left: dir * (first.offsetWidth + gap), behavior: reducedMotion() ? 'auto' : 'smooth' });
   };
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !finePointer()) return;
-    let down = false, startX = 0, startLeft = 0, moved = false;
-    const onDown = (e: PointerEvent) => { down = true; moved = false; startX = e.clientX; startLeft = el.scrollLeft; el.classList.add('is-grabbing'); };
-    const onMove = (e: PointerEvent) => {
-      if (!down) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 3) moved = true;
-      el.scrollLeft = startLeft - dx;
-    };
-    const onUp = () => { down = false; el.classList.remove('is-grabbing'); };
-    const onClick = (e: MouseEvent) => { if (moved) { e.preventDefault(); e.stopPropagation(); } };
-    el.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    el.addEventListener('click', onClick, true);
-    return () => {
-      el.removeEventListener('pointerdown', onDown);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      el.removeEventListener('click', onClick, true);
-    };
-  }, []);
-
   const offset = video ? 1 : 0;
+  const copies = Array.from({ length: RAIL_COPIES }, (_, c) => c);
   return (
     <div className="rail-wrap" data-reveal>
       <div ref={ref} className="rail" role="region" aria-label={label} tabIndex={0} data-cursor="Drag">
-        {video && <VideoShot {...video} />}
-        {world.shots.map((s, i) => {
-          const ratio = s.ratio ?? 19.5 / 9;
+        {copies.map((c) => {
+          // Only the middle copy is read out and focusable; the others are the loop's mirrors.
+          const clone = c !== 1;
           return (
-            <figure key={s.src} className="shot" style={{ ['--r' as string]: ratio }}>
-              <div className="shot-media">
-                <img src={asset(s.src)} alt={`${world.title} — ${s.caption}`} loading="lazy" decoding="async" draggable={false} width={720} height={Math.round(720 * ratio)} />
-              </div>
-              <figcaption><span>{String(i + 1 + offset).padStart(2, '0')}</span>{s.caption}</figcaption>
-            </figure>
+            <Fragment key={c}>
+              {video && <VideoShot {...video} clone={clone} />}
+              {world.shots.map((s, i) => {
+                const ratio = s.ratio ?? 19.5 / 9;
+                return (
+                  <figure key={s.src} className="shot" style={{ ['--r' as string]: ratio }} aria-hidden={clone || undefined} inert={clone || undefined}>
+                    <div className="shot-media">
+                      <img src={asset(s.src)} alt={clone ? '' : `${world.title} — ${s.caption}`} loading="lazy" decoding="async" draggable={false} width={720} height={Math.round(720 * ratio)} />
+                    </div>
+                    <figcaption><span>{String(i + 1 + offset).padStart(2, '0')}</span>{s.caption}</figcaption>
+                  </figure>
+                );
+              })}
+            </Fragment>
           );
         })}
       </div>
@@ -96,7 +138,7 @@ export function ShotRail({ world, label, video }: { world: World; label: string;
 }
 
 /** A muted gameplay loop that only plays while it is on screen (and never under reduced motion). */
-function VideoShot({ src, poster, caption }: { src: string; poster: string; caption: string }) {
+function VideoShot({ src, poster, caption, clone = false }: { src: string; poster: string; caption: string; clone?: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const v = ref.current;
@@ -108,7 +150,7 @@ function VideoShot({ src, poster, caption }: { src: string; poster: string; capt
     return () => io.disconnect();
   }, []);
   return (
-    <figure className="shot is-video" style={{ ['--r' as string]: 844 / 390 }}>
+    <figure className="shot is-video" style={{ ['--r' as string]: 844 / 390 }} aria-hidden={clone || undefined} inert={clone || undefined}>
       <div className="shot-media">
         <video ref={ref} src={asset(src)} poster={asset(poster)} muted loop playsInline preload="metadata" aria-label={caption} controls={reducedMotion()} />
         <span className="shot-live" aria-hidden><span className="pulse" />In game</span>
